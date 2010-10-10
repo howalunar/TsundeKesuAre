@@ -26,7 +26,7 @@ public class Timer extends Thread {
 			if (field.getNowMino().position.y != field.getNowMino().getDropPoint().y) {
 				step++;
 				if (step == 4) {
-					field.getNowMino().moveBottom();
+					field.moveBottom();
 					panel.repaint();
 					step = 0;
 				}
@@ -34,7 +34,7 @@ public class Timer extends Thread {
 			// �ڒn���O
 			else {
 				step2++;
-				if (step2 == 10) {
+				if (step2 == 8) {
 					field.setti();
 					panel.repaint();
 					step2 = 0;

@@ -28,7 +28,7 @@ public class VsPanel extends JPanel {
 		g.drawRect(cp_1.x - 1, cp_1.y - 1, my_field.getBlocks().length * 10 + 1, my_field.getViewLine() * 10 + 1);
 		g.drawRect(cp_2.x - 1, cp_2.y - 1, your_field.getBlocks().length * 10 + 1, your_field.getViewLine() * 10 + 1);
 		
-		// テトリスフィールド
+		// フィールド
 		Block[][] nullpo = my_field.getBlocks();
 		for (int i = 0; i < my_field.getBlocks().length; i++) {
 			

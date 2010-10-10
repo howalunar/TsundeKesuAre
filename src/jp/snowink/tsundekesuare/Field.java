@@ -111,8 +111,8 @@ public class Field {
 	}
 	
 	public void moveBottom() {
-			not_move = false;;
 		if (now_mino.moveBottom()) {
+			not_move = false;;
 		}
 	}
 	
@@ -140,6 +140,7 @@ public class Field {
 		boolean tspin = false;
 		int line = 0;
 		int rize = 0;
+//		message = "";
 		
 		if (now_mino instanceof MinoT && not_move) {
 			int count = 0;
@@ -180,6 +181,7 @@ public class Field {
 			}
 		}
 		
+		// 相手に送るライン数
 		if (your_field != null) {
 			if (tspin) {
 				switch (line) {
@@ -216,8 +218,12 @@ public class Field {
 			your_field.setNextRize(your_field.getNextRize() + rize);
 		}
 		
+		// BTB, メッセージ
 		if (tspin) {
 			switch (line) {
+			case 0:
+				message = "T-SPIN";
+				break;
 			case 1:
 				message = "T-SPIN SINGLE";
 				break;
@@ -228,23 +234,21 @@ public class Field {
 				message = "T-SPIN TRIPLE";
 				break;
 			}
-			if (btb) {
-				message = "BACK TO BACK " +  message;
+			if (line >= 1) {
+				if (btb) {
+					message = "BACK TO BACK " +  message;
+				}
+				btb = true;
 			}
-			btb = true;
 		}
 		else {
 			switch (line) {
-			case 2:
-				message = "";
-				btb = false;
-				break;
-			case 3:
+			case 1: case 2: case 3:
 				message = "";
 				btb = false;
 				break;
 			case 4:
-				message = "TETRIS";
+				message = "4-LINES";
 				if (btb) {
 					message = "BACK TO BACK " +  message;
 				}
