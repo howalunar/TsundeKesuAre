@@ -80,6 +80,7 @@ public class MainWindow extends JFrame implements KeyListener {
 					DataPool.vs_field_2.getTimer().start();
 					DataPool.vs_field_1.setYourField(DataPool.vs_field_2);
 					DataPool.vs_field_2.setYourField(DataPool.vs_field_1);
+					new AI().start();
 					break;
 				case 3:
 					break;

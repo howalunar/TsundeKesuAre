@@ -22,6 +22,8 @@ public class Field {
 	
 	private boolean not_move = false;
 
+	public boolean ochihajime = true;
+	
 	
 	private Field your_field = null;
 	
@@ -112,7 +114,7 @@ public class Field {
 	
 	public void moveBottom() {
 		if (now_mino.moveBottom()) {
-			not_move = false;;
+			not_move = false;
 		}
 	}
 	
@@ -215,7 +217,23 @@ public class Field {
 					break;
 				}
 			}
+			
+			if (next_rize > 0) {
+				
+				// 相殺しきれてない
+				if (next_rize >= rize) {
+					next_rize -= rize;
+					rize = 0;
+				}
+				// 相殺できてさらに送れる
+				else {
+					rize -= next_rize;
+					next_rize = 0;
+				}
+			}
 			your_field.setNextRize(your_field.getNextRize() + rize);
+
+		
 		}
 		
 		// BTB, メッセージ
@@ -262,41 +280,42 @@ public class Field {
 	}
 	
 	public void rize() {
-		
-		for (int y = blocks[0].length - 1; y >= next_rize; y--) {
-			for (int x = 0; x < blocks.length; x++) {
-				blocks[x][y].color = blocks[x][y - next_rize].color;
-				blocks[x][y].color_dark = blocks[x][y - next_rize].color_dark;
-				blocks[x][y].color_light = blocks[x][y - next_rize].color_light;
-				blocks[x][y].shadow_color = blocks[x][y - next_rize].shadow_color;
-				blocks[x][y].shadow_color_dark = blocks[x][y - next_rize].shadow_color_dark;
-				blocks[x][y].shadow_color_light = blocks[x][y - next_rize].shadow_color_light;
-				blocks[x][y].ume = blocks[x][y - next_rize].ume;
-			}
-		}
-		int kakuritsu = 80;
-		int rnd;
-		for (int y = next_rize - 1; y >= 0; y--) {
-			// 一定確率で穴の位置を変更
-			if (new Random().nextInt(100) + 1 > kakuritsu ) {
-				// 再抽選時に同じ値を防ぐ
-				while (ake == (rnd = new Random().nextInt(blocks.length))) {}
-				ake = rnd;
-			}
-			for (int x = 0; x < blocks.length; x++) {
-				blocks[x][y] = new Block();
-				if (x != ake) {
-					blocks[x][y].color = new Color(128, 128, 128);
-					blocks[x][y].color_dark = new Color(64, 64, 64);
-					blocks[x][y].color_light = new Color(255, 255, 255);
-					blocks[x][y].shadow_color = new Color(255, 255, 0);
-					blocks[x][y].shadow_color_dark = new Color(255, 255, 0);
-					blocks[x][y].shadow_color_light = new Color(255, 255, 0);
-					blocks[x][y].ume = true;
+		if (next_rize > 0) {
+			for (int y = blocks[0].length - 1; y >= next_rize; y--) {
+				for (int x = 0; x < blocks.length; x++) {
+					blocks[x][y].color = blocks[x][y - next_rize].color;
+					blocks[x][y].color_dark = blocks[x][y - next_rize].color_dark;
+					blocks[x][y].color_light = blocks[x][y - next_rize].color_light;
+					blocks[x][y].shadow_color = blocks[x][y - next_rize].shadow_color;
+					blocks[x][y].shadow_color_dark = blocks[x][y - next_rize].shadow_color_dark;
+					blocks[x][y].shadow_color_light = blocks[x][y - next_rize].shadow_color_light;
+					blocks[x][y].ume = blocks[x][y - next_rize].ume;
 				}
 			}
+			int kakuritsu = 80;
+			int rnd;
+			for (int y = next_rize - 1; y >= 0; y--) {
+				// 一定確率で穴の位置を変更
+				if (new Random().nextInt(100) + 1 > kakuritsu ) {
+					// 再抽選時に同じ値を防ぐ
+					while (ake == (rnd = new Random().nextInt(blocks.length))) {}
+					ake = rnd;
+				}
+				for (int x = 0; x < blocks.length; x++) {
+					blocks[x][y] = new Block();
+					if (x != ake) {
+						blocks[x][y].color = new Color(128, 128, 128);
+						blocks[x][y].color_dark = new Color(64, 64, 64);
+						blocks[x][y].color_light = new Color(255, 255, 255);
+						blocks[x][y].shadow_color = new Color(255, 255, 0);
+						blocks[x][y].shadow_color_dark = new Color(255, 255, 0);
+						blocks[x][y].shadow_color_light = new Color(255, 255, 0);
+						blocks[x][y].ume = true;
+					}
+				}
+			}
+			next_rize = 0;
 		}
-		next_rize = 0;
 	}
 	
 	
@@ -329,6 +348,7 @@ public class Field {
 		}
 		rize();
 		timer.reset();
+		ochihajime = true;
 	}
 	
 	public Mino getMino() {
