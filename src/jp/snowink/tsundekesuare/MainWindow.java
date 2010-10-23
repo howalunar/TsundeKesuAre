@@ -21,7 +21,7 @@ public class MainWindow extends JFrame implements KeyListener {
 	
 	public static boolean press = true;
 	
-	public static String[] menus = {"ENDLESS", "AUTO", "VS. COM", "CONFIG", "EXIT"};
+	public static String[] menus = {"MAN ENDLESS", "COM ENDLESS", "MAN VS. COM", "COM VS. COM", "CONFIG", "ABOUT", "EXIT"};
 	public static int now_menu = 0; 
 	
 	Timer timer_1 = null;;
