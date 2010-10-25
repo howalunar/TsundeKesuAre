@@ -1,4 +1,4 @@
-package jp.snowink.tsundekesuare;
+package jp.snowink.tka;
 import java.awt.Font;
 import java.awt.Graphics;
 

@@ -1,4 +1,4 @@
-package jp.snowink.tsundekesuare;
+package jp.snowink.tka;
 
 import java.util.Random;
 
@@ -38,15 +38,15 @@ public class AI extends Thread {
 		
 			int x = new Random().nextInt(field.getBlocks().length + 3) - 3;
 		
-			if (field.getNowMino().check(field.getNowMino().piece[field.getNowMino().now_piece], x, field.getNowMino().position.y, field.getBlocks())) {
+			if (field.getNowMino().check(field.getNowMino().getPiece(), x, field.getNowMino().getPosition().y, field.getBlocks())) {
 
-				if (field.getNowMino().position.x > x) {
-					for (int i = 1; i <= field.getNowMino().position.x - x; i++) {
+				if (field.getNowMino().getPosition().x > x) {
+					for (int i = 1; i <= field.getNowMino().getPosition().x - x; i++) {
 						field.moveLeft();
 					}
 				}
 				else {
-					for (int i = 1; i <= x - field.getNowMino().position.x; i++) {
+					for (int i = 1; i <= x - field.getNowMino().getPosition().x; i++) {
 						field.moveRight();
 					}
 				}

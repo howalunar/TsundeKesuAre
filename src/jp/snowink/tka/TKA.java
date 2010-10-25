@@ -1,4 +1,4 @@
-package jp.snowink.tsundekesuare;
+package jp.snowink.tka;
 
 public class TKA {
 

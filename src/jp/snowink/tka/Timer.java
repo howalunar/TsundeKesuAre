@@ -1,4 +1,4 @@
-package jp.snowink.tsundekesuare;
+package jp.snowink.tka;
 
 import javax.swing.JPanel;
 
@@ -22,8 +22,8 @@ public class Timer extends Thread {
 		
 		while (!DataPool.gameover) {
 			
-			// �ڒn�O
-			if (field.getNowMino().position.y != field.getNowMino().getDropPoint().y) {
+			// 空中
+			if (field.getNowMino().getPosition().y != field.getNowMino().getDropPoint().y) {
 				step++;
 				if (step == 4) {
 					field.moveBottom();
@@ -31,7 +31,7 @@ public class Timer extends Thread {
 					step = 0;
 				}
 			}
-			// �ڒn���O
+			// 接地直前
 			else {
 				step2++;
 				if (step2 == 8) {
@@ -54,9 +54,13 @@ public class Timer extends Thread {
 	}
 	
 	public void reset() {
-		step = 0;
 		step2 = 0;
 	}
 	
+	public void init() {
+		step = 0;
+		step2 = 0;
+	}
+
 	
 }

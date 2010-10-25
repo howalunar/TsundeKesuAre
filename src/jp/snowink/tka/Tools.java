@@ -1,4 +1,4 @@
-package jp.snowink.tsundekesuare;
+package jp.snowink.tka;
 
 public class Tools {
 	
@@ -13,7 +13,7 @@ public class Tools {
 		for (int x = 0; x < blocks.length; x++) {
 			if (x != ana) {
 				for (int y = - 1 ; y >= 0; y--) {
-					if (blocks[x][y].ume) {
+					if (blocks[x][y].isBlock()) {
 						if (x != 0) {
 							dekoboko += Math.abs(mae - y);
 						}

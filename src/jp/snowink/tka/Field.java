@@ -1,8 +1,17 @@
-package jp.snowink.tsundekesuare;
+package jp.snowink.tka;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
+
+import jp.snowink.tka.mino.Mino;
+import jp.snowink.tka.mino.MinoI;
+import jp.snowink.tka.mino.MinoJ;
+import jp.snowink.tka.mino.MinoL;
+import jp.snowink.tka.mino.MinoO;
+import jp.snowink.tka.mino.MinoS;
+import jp.snowink.tka.mino.MinoT;
+import jp.snowink.tka.mino.MinoZ;
 
 
 public class Field {
@@ -148,7 +157,7 @@ public class Field {
 			int count = 0;
 			Point[] kado = {new Point(0, 1), new Point(0, 3), new Point(2, 1), new Point(2, 3)};
 			for (Point i : kado) {
-				if (now_mino.position.x + i.x < 0 || now_mino.position.x + i.x >= blocks.length || now_mino.position.y + i.y < 0 || blocks[now_mino.position.x + i.x][now_mino.position.y + i.y].ume) {
+				if (now_mino.getPosition().x + i.x < 0 || now_mino.getPosition().x + i.x >= blocks.length || now_mino.getPosition().y + i.y < 0 || blocks[now_mino.getPosition().x + i.x][now_mino.getPosition().y + i.y].isBlock()) {
 					count++;
 				}
 			}
@@ -159,18 +168,12 @@ public class Field {
 		
 		for (int i = 0; i < blocks[0].length; i++) {
 			
-			if (blocks[0][i].ume && blocks[1][i].ume && blocks[2][i].ume && blocks[3][i].ume && blocks[4][i].ume && blocks[5][i].ume && blocks[6][i].ume && blocks[7][i].ume && blocks[8][i].ume && blocks[9][i].ume) {
+			if (blocks[0][i].isBlock() && blocks[1][i].isBlock() && blocks[2][i].isBlock() && blocks[3][i].isBlock() && blocks[4][i].isBlock() && blocks[5][i].isBlock() && blocks[6][i].isBlock() && blocks[7][i].isBlock() && blocks[8][i].isBlock() && blocks[9][i].isBlock()) {
 				line++;
 			}
 			else if (line >= 1) {
 				for (int j = 0; j < blocks.length; j++) {
-					blocks[j][i - line].color = blocks[j][i].color;
-					blocks[j][i - line].color_dark = blocks[j][i].color_dark;
-					blocks[j][i - line].color_light = blocks[j][i].color_light;
-					blocks[j][i - line].shadow_color = blocks[j][i].shadow_color;
-					blocks[j][i - line].shadow_color_dark = blocks[j][i].shadow_color_dark;
-					blocks[j][i - line].shadow_color_light = blocks[j][i].shadow_color_light;
-					blocks[j][i - line].ume = blocks[j][i].ume;
+					blocks[j][i - line].copyFrom(blocks[j][i]);
 				}
 			}
 			
@@ -283,13 +286,7 @@ public class Field {
 		if (next_rize > 0) {
 			for (int y = blocks[0].length - 1; y >= next_rize; y--) {
 				for (int x = 0; x < blocks.length; x++) {
-					blocks[x][y].color = blocks[x][y - next_rize].color;
-					blocks[x][y].color_dark = blocks[x][y - next_rize].color_dark;
-					blocks[x][y].color_light = blocks[x][y - next_rize].color_light;
-					blocks[x][y].shadow_color = blocks[x][y - next_rize].shadow_color;
-					blocks[x][y].shadow_color_dark = blocks[x][y - next_rize].shadow_color_dark;
-					blocks[x][y].shadow_color_light = blocks[x][y - next_rize].shadow_color_light;
-					blocks[x][y].ume = blocks[x][y - next_rize].ume;
+					blocks[x][y].copyFrom(blocks[x][y - next_rize]);
 				}
 			}
 			int kakuritsu = 80;
@@ -304,13 +301,9 @@ public class Field {
 				for (int x = 0; x < blocks.length; x++) {
 					blocks[x][y] = new Block();
 					if (x != ake) {
-						blocks[x][y].color = new Color(128, 128, 128);
-						blocks[x][y].color_dark = new Color(64, 64, 64);
-						blocks[x][y].color_light = new Color(255, 255, 255);
-						blocks[x][y].shadow_color = new Color(255, 255, 0);
-						blocks[x][y].shadow_color_dark = new Color(255, 255, 0);
-						blocks[x][y].shadow_color_light = new Color(255, 255, 0);
-						blocks[x][y].ume = true;
+						blocks[x][y].createBlock();
+						blocks[x][y].setColors(new Color(128, 128, 128), new Color(255, 255, 255), new Color(64, 64, 64));
+						blocks[x][y].setShadowColors(new Color(255, 255, 0), new Color(255, 255, 0), new Color(255, 255, 0));
 					}
 				}
 			}
@@ -321,17 +314,11 @@ public class Field {
 	
 	public void setti() {
 		
-		for (int i = 0; i < 4; i++) {
+		for (int x = 0; x < now_mino.getMinoSize(); x++) {
 			
-			for (int j = 0; j < 4; j++) {
-				if (now_mino.piece[now_mino.now_piece][i][j].ume == true) {
-					blocks[now_mino.position.x + i][now_mino.position.y + j].ume = true;
-					blocks[now_mino.position.x + i][now_mino.position.y + j].color = now_mino.color;
-					blocks[now_mino.position.x + i][now_mino.position.y + j].color_dark = now_mino.color_dark;
-					blocks[now_mino.position.x + i][now_mino.position.y + j].color_light = now_mino.color_light;
-					blocks[now_mino.position.x + i][now_mino.position.y + j].shadow_color = now_mino.shadow_color;
-					blocks[now_mino.position.x + i][now_mino.position.y + j].shadow_color_dark = now_mino.shadow_color_dark;
-					blocks[now_mino.position.x + i][now_mino.position.y + j].shadow_color_light = now_mino.shadow_color_light;
+			for (int y = 0; y < now_mino.getMinoSize(); y++) {
+				if (now_mino.getPiece()[x][y].isBlock()) {
+					blocks[now_mino.getPosition().x + x][now_mino.getPosition().y + y].copyFrom(now_mino.getPiece()[x][y]);
 				}
 			}
 			
@@ -343,11 +330,11 @@ public class Field {
 		now_mino = next_minos.remove(0);
 		next_minos.add(getMino());
 		can_hold = true;
-		if(!now_mino.check(now_mino.piece[now_mino.now_piece], now_mino.position.x, now_mino.position.y, blocks)) {
+		if(!now_mino.check(now_mino.getPiece(), now_mino.getPosition().x, now_mino.getPosition().y, blocks)) {
 			TKA.window.gameOver();
 		}
 		rize();
-		timer.reset();
+		timer.init();
 		ochihajime = true;
 	}
 	
@@ -381,7 +368,7 @@ public class Field {
 			hold_mino = tmp;
 			can_hold = false;
 		}
-		hold_mino.reset();
+		hold_mino.initMino();
 	}
 	
 	

@@ -1,4 +1,4 @@
-package jp.snowink.tsundekesuare;
+package jp.snowink.tka;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,7 +29,7 @@ public class MainWindow extends JFrame implements KeyListener {
 	public MainWindow() {
 				
 		this.setTitle("TsundeKesuAre");
-		this.setBounds(320, 220, 460, 300);
+		this.setBounds(320, 220, 460, 345);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
@@ -84,7 +84,7 @@ public class MainWindow extends JFrame implements KeyListener {
 					break;
 				case 3:
 					break;
-				case 4:
+				case 6:
 					System.exit(0);
 					break;
 				}

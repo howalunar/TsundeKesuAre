@@ -1,4 +1,4 @@
-package jp.snowink.tsundekesuare;
+package jp.snowink.tka;
 import java.util.ArrayList;
 import java.util.Random;
 
