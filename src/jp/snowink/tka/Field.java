@@ -4,17 +4,19 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 
-import jp.snowink.tka.mino.Mino;
-import jp.snowink.tka.mino.MinoI;
-import jp.snowink.tka.mino.MinoJ;
-import jp.snowink.tka.mino.MinoL;
-import jp.snowink.tka.mino.MinoO;
-import jp.snowink.tka.mino.MinoS;
-import jp.snowink.tka.mino.MinoT;
-import jp.snowink.tka.mino.MinoZ;
+import jp.snowink.tka.mino.*;
 
 
 public class Field {
+
+	private int max_mino_size = 4;
+	public int getMaxMinoSize() {
+		return max_mino_size;
+	}
+
+	public void setMaxMinoSize(int max_mino_size) {
+		this.max_mino_size = max_mino_size;
+	}
 
 	private Mino now_mino = null;
 	private ArrayList<Mino> next_minos = new ArrayList<Mino>();
@@ -28,7 +30,8 @@ public class Field {
 	private int ake = new Random().nextInt(blocks.length);
 	private boolean btb = false;
 	private String message = "";
-	
+	private int kakuritsu = 80;
+
 	private boolean not_move = false;
 
 	public boolean ochihajime = true;
@@ -61,6 +64,10 @@ public class Field {
 			
 		}
 
+	}
+	
+	public int getKakuritsu() {
+		return kakuritsu;
 	}
 	
 	public Mino getNowMino() {
@@ -167,8 +174,16 @@ public class Field {
 		}
 		
 		for (int i = 0; i < blocks[0].length; i++) {
+			boolean line_clear_flag = true;
 			
-			if (blocks[0][i].isBlock() && blocks[1][i].isBlock() && blocks[2][i].isBlock() && blocks[3][i].isBlock() && blocks[4][i].isBlock() && blocks[5][i].isBlock() && blocks[6][i].isBlock() && blocks[7][i].isBlock() && blocks[8][i].isBlock() && blocks[9][i].isBlock()) {
+			for (int k = 0; k < blocks.length; k++) {
+				if (!blocks[k][i].isBlock()) {
+					line_clear_flag = false;
+				}
+			}
+			
+			
+			if (line_clear_flag) {
 				line++;
 			}
 			else if (line >= 1) {
@@ -289,7 +304,6 @@ public class Field {
 					blocks[x][y].copyFrom(blocks[x][y - next_rize]);
 				}
 			}
-			int kakuritsu = 80;
 			int rnd;
 			for (int y = next_rize - 1; y >= 0; y--) {
 				// 一定確率で穴の位置を変更
@@ -370,7 +384,10 @@ public class Field {
 		}
 		hold_mino.initMino();
 	}
-	
+
+	public void setKakuritsu(int kakuritsu) {
+		this.kakuritsu = kakuritsu;
+	}	
 	
 	public void setYourField(Field field) {
 		this.your_field = field;

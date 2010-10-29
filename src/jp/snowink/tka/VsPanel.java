@@ -83,9 +83,8 @@ public class VsPanel extends JPanel {
 	}
 	
 	private void drawHold(Graphics g, Field field, int size, Point point) {
-		int tmp = 4; // 要修正
 		g.setColor(Color.BLACK);
-		g.drawRect(point.x - 1, point.y - 1, size * tmp + 1, size * tmp + 1);
+		g.drawRect(point.x - 1, point.y - 1, size * field.getMaxMinoSize() + 1, size * field.getMaxMinoSize() + 1);
 		
 		Mino mino;
 		if ((mino = field.getHoldMino()) != null) {
