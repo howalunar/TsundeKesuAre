@@ -26,11 +26,11 @@ public class EndlessPanel extends JPanel {
 		
 		// 枠
 		g.setColor(Color.BLACK);
-		g.drawRect(cp.x - 1, cp.y - 1, field.getBlocks().length * 10 + 1, field.getViewLine() * 10 + 1);
+		g.drawRect(cp.x - 1, cp.y - 1, field.getBan().length * 10 + 1, field.getViewLine() * 10 + 1);
 		
 		// テトリスフィールド
-		Block[][] nullpo = field.getBlocks();
-		for (int i = 0; i < field.getBlocks().length; i++) {
+		Block[][] nullpo = field.getBan();
+		for (int i = 0; i < field.getBan().length; i++) {
 			
 			for (int j = 0; j < field.getViewLine(); j++) {
 				g.setColor(nullpo[i][j].getColor());

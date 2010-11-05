@@ -21,13 +21,13 @@ public class Field {
 	private Mino now_mino = null;
 	private ArrayList<Mino> next_minos = new ArrayList<Mino>();
 	private Mino hold_mino = null;
-	private Block[][] blocks = new Block[10][24];
+	private Block[][] ban = new Block[10][24];
 	private int view_line = 20;
 	private boolean can_hold = true;
 	private int next_mino_volume = 6;
 	private int next_rize = 0;
 	private Timer timer;
-	private int ake = new Random().nextInt(blocks.length);
+	private int ake = new Random().nextInt(ban.length);
 	private boolean btb = false;
 	private String message = "";
 	private int kakuritsu = 80;
@@ -56,10 +56,10 @@ public class Field {
 			next_minos.add(getMino());
 		}
 		
-		for (int i = 0; i < blocks.length; i++) {
+		for (int i = 0; i < ban.length; i++) {
 			
-			for (int j = 0; j < blocks[0].length; j++) {
-				blocks[i][j] = new Block();
+			for (int j = 0; j < ban[0].length; j++) {
+				ban[i][j] = new Block();
 			}
 			
 		}
@@ -82,12 +82,12 @@ public class Field {
 		return hold_mino;
 	}
 
-	public Block[][] getBlocks() {
-		return blocks;
+	public Block[][] getBan() {
+		return ban;
 	}
 	
-	public void setBlocks(Block[][] blocks) {
-		this.blocks = blocks;
+	public void setBan(Block[][] blocks) {
+		this.ban = blocks;
 	}
 	
 	public int getViewLine() {
@@ -164,7 +164,7 @@ public class Field {
 			int count = 0;
 			Point[] kado = {new Point(0, 1), new Point(0, 3), new Point(2, 1), new Point(2, 3)};
 			for (Point i : kado) {
-				if (now_mino.getPosition().x + i.x < 0 || now_mino.getPosition().x + i.x >= blocks.length || now_mino.getPosition().y + i.y < 0 || blocks[now_mino.getPosition().x + i.x][now_mino.getPosition().y + i.y].isBlock()) {
+				if (now_mino.getPosition().x + i.x < 0 || now_mino.getPosition().x + i.x >= ban.length || now_mino.getPosition().y + i.y < 0 || ban[now_mino.getPosition().x + i.x][now_mino.getPosition().y + i.y].isBlock()) {
 					count++;
 				}
 			}
@@ -173,11 +173,11 @@ public class Field {
 			}
 		}
 		
-		for (int i = 0; i < blocks[0].length; i++) {
+		for (int i = 0; i < ban[0].length; i++) {
 			boolean line_clear_flag = true;
 			
-			for (int k = 0; k < blocks.length; k++) {
-				if (!blocks[k][i].isBlock()) {
+			for (int k = 0; k < ban.length; k++) {
+				if (!ban[k][i].isBlock()) {
 					line_clear_flag = false;
 				}
 			}
@@ -187,16 +187,16 @@ public class Field {
 				line++;
 			}
 			else if (line >= 1) {
-				for (int j = 0; j < blocks.length; j++) {
-					blocks[j][i - line].copyFrom(blocks[j][i]);
+				for (int j = 0; j < ban.length; j++) {
+					ban[j][i - line].copyFrom(ban[j][i]);
 				}
 			}
 			
 		}
 		if (line >= 1) {
-			for (int i = blocks[0].length; i >= blocks[0].length - line - 1; i--) {
-				for (int j = 0; j < blocks.length; j++) {
-					blocks[j][blocks[0].length - 1] = new Block();
+			for (int i = ban[0].length; i >= ban[0].length - line - 1; i--) {
+				for (int j = 0; j < ban.length; j++) {
+					ban[j][ban[0].length - 1] = new Block();
 				}
 			}
 		}
@@ -299,9 +299,9 @@ public class Field {
 	
 	public void rize() {
 		if (next_rize > 0) {
-			for (int y = blocks[0].length - 1; y >= next_rize; y--) {
-				for (int x = 0; x < blocks.length; x++) {
-					blocks[x][y].copyFrom(blocks[x][y - next_rize]);
+			for (int y = ban[0].length - 1; y >= next_rize; y--) {
+				for (int x = 0; x < ban.length; x++) {
+					ban[x][y].copyFrom(ban[x][y - next_rize]);
 				}
 			}
 			int rnd;
@@ -309,15 +309,15 @@ public class Field {
 				// 一定確率で穴の位置を変更
 				if (new Random().nextInt(100) + 1 > kakuritsu ) {
 					// 再抽選時に同じ値を防ぐ
-					while (ake == (rnd = new Random().nextInt(blocks.length))) {}
+					while (ake == (rnd = new Random().nextInt(ban.length))) {}
 					ake = rnd;
 				}
-				for (int x = 0; x < blocks.length; x++) {
-					blocks[x][y] = new Block();
+				for (int x = 0; x < ban.length; x++) {
+					ban[x][y] = new Block();
 					if (x != ake) {
-						blocks[x][y].createBlock();
-						blocks[x][y].setColors(new Color(128, 128, 128), new Color(255, 255, 255), new Color(64, 64, 64));
-						blocks[x][y].setShadowColors(new Color(255, 255, 0), new Color(255, 255, 0), new Color(255, 255, 0));
+						ban[x][y].createBlock();
+						ban[x][y].setColors(new Color(128, 128, 128), new Color(255, 255, 255), new Color(64, 64, 64));
+						ban[x][y].setShadowColors(new Color(255, 255, 0), new Color(255, 255, 0), new Color(255, 255, 0));
 					}
 				}
 			}
@@ -332,7 +332,7 @@ public class Field {
 			
 			for (int y = 0; y < now_mino.getMinoSize(); y++) {
 				if (now_mino.getPiece()[x][y].isBlock()) {
-					blocks[now_mino.getPosition().x + x][now_mino.getPosition().y + y].copyFrom(now_mino.getPiece()[x][y]);
+					ban[now_mino.getPosition().x + x][now_mino.getPosition().y + y].copyFrom(now_mino.getPiece()[x][y]);
 				}
 			}
 			
@@ -344,7 +344,7 @@ public class Field {
 		now_mino = next_minos.remove(0);
 		next_minos.add(getMino());
 		can_hold = true;
-		if(!now_mino.check(now_mino.getPiece(), now_mino.getPosition().x, now_mino.getPosition().y, blocks)) {
+		if(!now_mino.check(now_mino.getPiece(), now_mino.getPosition().x, now_mino.getPosition().y, ban)) {
 			TKA.window.gameOver();
 		}
 		rize();
@@ -354,13 +354,13 @@ public class Field {
 	
 	public Mino getMino() {
 		if (minos.isEmpty()) {
-			minos.add(new MinoI(this, blocks));
-			minos.add(new MinoJ(this, blocks));
-			minos.add(new MinoL(this, blocks));
-			minos.add(new MinoO(this, blocks));
-			minos.add(new MinoS(this, blocks));
-			minos.add(new MinoT(this, blocks));
-			minos.add(new MinoZ(this, blocks));
+			minos.add(new MinoI(this, ban));
+			minos.add(new MinoJ(this, ban));
+			minos.add(new MinoL(this, ban));
+			minos.add(new MinoO(this, ban));
+			minos.add(new MinoS(this, ban));
+			minos.add(new MinoT(this, ban));
+			minos.add(new MinoZ(this, ban));
 		}
 		int i = new Random().nextInt(minos.size());
 		Mino m = minos.get(i);

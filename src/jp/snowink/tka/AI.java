@@ -36,9 +36,9 @@ public class AI extends Thread {
 		
 		while (true) {
 		
-			int x = new Random().nextInt(field.getBlocks().length + 3) - 3;
+			int x = new Random().nextInt(field.getBan().length + 3) - 3;
 		
-			if (field.getNowMino().check(field.getNowMino().getPiece(), x, field.getNowMino().getPosition().y, field.getBlocks())) {
+			if (field.getNowMino().check(field.getNowMino().getPiece(), x, field.getNowMino().getPosition().y, field.getBan())) {
 
 				if (field.getNowMino().getPosition().x > x) {
 					for (int i = 1; i <= field.getNowMino().getPosition().x - x; i++) {

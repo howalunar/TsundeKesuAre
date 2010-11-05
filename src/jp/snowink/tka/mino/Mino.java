@@ -74,6 +74,9 @@ public abstract class Mino {
 	}
 	
 	public Point getDropPoint() {
+		if (!check(getPiece(), position.x, position.y, blocks)) {
+			return null;
+		}
 		for (int i = position.y; i >= -mino_size + 1; i--) {
 			if(!check(getPiece(), position.x, i - 1, blocks)) {
 				return new Point(position.x, i);

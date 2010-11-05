@@ -77,7 +77,7 @@ public class MainWindow extends JFrame implements KeyListener {
 					active_field = DataPool.vs_field_1;
 					active_panel = vs_panel;
 					DataPool.vs_field_1.getTimer().start();
-					DataPool.vs_field_2.getTimer().start();
+//					DataPool.vs_field_2.getTimer().start();
 					DataPool.vs_field_1.setYourField(DataPool.vs_field_2);
 					DataPool.vs_field_2.setYourField(DataPool.vs_field_1);
 					new AI().start();
