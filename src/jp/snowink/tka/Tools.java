@@ -7,33 +7,32 @@ import jp.snowink.tka.mino.Mino;
 
 public class Tools {
 	
-	public static ArrayList<Point> getAllDropPoint(Field field) throws CloneNotSupportedException {
-		ArrayList<Point> dps = new ArrayList<Point>();
-		for (int r = 0; r < 4; r++) {
-			for (int rr = 0; rr < r; rr++) {
-				field.getNowMino().rotateLeft();
-			}
-			for (int i = -field.getNowMino().getMinoSize() + 1; i <= field.getBan().length; i++) {
-				Field f = (Field) field.clone();
-				if (f.getNowMino().check(f.getNowMino().getPiece(), i, f.getNowMino().getPosition().y, f.getBan())) {
-					dps.add(f.getNowMino().getDropPoint(new Point(i, f.getNowMino().getPosition().y)));
-				}
-			}
-		}
-		return dps;
-	}
-	
 	public static ArrayList<Move> getAllMove(Field field) throws CloneNotSupportedException {
 		ArrayList<Move> moves = new ArrayList<Move>();
 		for (int r = 0; r < Mino.ROTATE_PATTERN; r++) {
-			for (int i = -field.getNowMino().getMinoSize() + 1; i <= field.getBan().length; i++) {
+			for (int x = -field.getNowMino().getMinoSize() + 1; x <= field.getBan().length; x++) {
 				Field f = (Field) field.clone();
 				for (int rr = 0; rr < r; rr++) {
 					f.rotateRight();
 				}
-				Point dp = f.getNowMino().getDropPoint(new Point(i, f.getNowMino().getPosition().y));
+				Point dp = f.getNowMino().getDropPoint(new Point(x, f.getNowMino().getPosition().y));
 				if (dp != null) {
-					moves.add(new Move(null, dp, r));
+
+					while (f.getNowMino().getPosition().x != x) {
+						if (f.getNowMino().getPosition().x > x) {
+							if(!f.moveLeft()) {
+								break;
+							}
+						}
+						else {
+							if(f.moveRight()) {
+								break;
+							}
+						}
+					}
+					f.hardDrop();
+				
+					moves.add(new Move(f, dp, r));
 //					System.out.println(f.getNowMino().getDropPoint(new Point(i, f.getNowMino().getPosition().y)) + " (" + r + ")");
 				}
 			}
@@ -102,14 +101,30 @@ public class Tools {
 		field.hardDrop();
 	}
 	
-	public static int getAna(Block[][] ban) {
-		return 0;
+	public static int getAna() {
+		return 9;
+	}
+	
+	public static int getSukima(Block[][] ban) {
+		int count = 0;
+		for (int x = 0; x < ban.length; x++) {
+			boolean hajime = false;
+			for (int y = ban[0].length - 1; y >= 0; y--) {
+				if (hajime && !ban[x][y].isBlock()) {
+					count++;
+				}
+				else if (ban[x][y].isBlock()) {
+					hajime = true;
+				}
+			}
+		}
+		return count;
 	}
 
 	public static int dekoboko(Block[][] ban) {
 		int dekoboko = 0;
 		int mae = 0;
-		int ana = getAna(ban);
+		int ana = getAna();
 		for (int x = 0; x < ban.length; x++) {
 			if (x != ana) {
 				for (int y = - 1 ; y >= 0; y--) {
