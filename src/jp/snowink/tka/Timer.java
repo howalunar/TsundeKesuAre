@@ -2,7 +2,7 @@ package jp.snowink.tka;
 
 import javax.swing.JPanel;
 
-public class Timer extends Thread {
+public class Timer extends Thread implements Cloneable {
 	
 	public int step = 0;
 	public int step2 = 0;
@@ -25,7 +25,7 @@ public class Timer extends Thread {
 			// 空中
 			if (field.getNowMino().getPosition().y != field.getNowMino().getDropPoint().y) {
 				step++;
-				if (step == 4) {
+				if (step == 40) {
 					field.moveBottom();
 					panel.repaint();
 					step = 0;
@@ -34,16 +34,17 @@ public class Timer extends Thread {
 			// 接地直前
 			else {
 				step2++;
-				if (step2 == 8) {
+				if (step2 == 80) {
 					field.setti();
 					panel.repaint();
 					step2 = 0;
 				}
 			}
 			
+			panel.repaint();
 			
 			try {
-				this.sleep(100);
+				this.sleep(10);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

@@ -1,5 +1,7 @@
 package jp.snowink.tka;
 
+import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -12,15 +14,14 @@ public class AI extends Thread {
 	public void run() {
 		
 		while (!DataPool.gameover) {
-			
 			if (field.ochihajime) {
-				execute(field, panel);
 				field.ochihajime = false;
+				execute(field, panel);
 			}
 			
 			
 			try {
-				this.sleep(100);
+				this.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -34,25 +35,21 @@ public class AI extends Thread {
 	
 	public void execute(Field field, JPanel panel) {
 		
-		while (true) {
-		
-			int x = new Random().nextInt(field.getBan().length + 3) - 3;
-		
-			if (field.getNowMino().check(field.getNowMino().getPiece(), x, field.getNowMino().getPosition().y, field.getBan())) {
-
-				if (field.getNowMino().getPosition().x > x) {
-					for (int i = 1; i <= field.getNowMino().getPosition().x - x; i++) {
-						field.moveLeft();
-					}
-				}
-				else {
-					for (int i = 1; i <= x - field.getNowMino().getPosition().x; i++) {
-						field.moveRight();
-					}
-				}
-//				field.getNowMino().hardDrop();
-				break;
-			}
+		try {
+			// 手の検索
+			ArrayList<Move> moves = Tools.getAllMove(field);
+			
+			// 最善手の選択
+			int rnd = new Random().nextInt(moves.size());
+			Point szs = moves.get(rnd).getPoint();
+			int szs_r = moves.get(rnd).getRotate();
+			System.out.println(szs + " (" + szs_r + ")");
+			
+			// 最善手の実行
+			Tools.drop(field, szs, szs_r);
+			
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
 		}
 		
 	}

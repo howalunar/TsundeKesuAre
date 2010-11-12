@@ -7,7 +7,7 @@ import java.util.Random;
 import jp.snowink.tka.mino.*;
 
 
-public class Field {
+public class Field implements Cloneable {
 
 	private int max_mino_size = 4;
 	public int getMaxMinoSize() {
@@ -38,6 +38,24 @@ public class Field {
 	
 	
 	private Field your_field = null;
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		Field field = (Field) super.clone();
+		field.now_mino = (Mino) now_mino.clone();
+		if (hold_mino != null) {
+			field.hold_mino = (Mino) hold_mino.clone();
+		}
+		field.ban = new Block[ban.length][ban[0].length];
+		for (int x = 0; x < field.ban.length; x++) {
+			for (int y = 0; y < field.ban[0].length; y++) {
+				field.ban[x][y] = (Block) ban[x][y].clone();
+			}
+			
+		}
+		field.next_minos = (ArrayList<Mino>) next_minos.clone();
+		return field;
+	}
 	
 	public int getNextRize() {
 		return next_rize;
@@ -114,24 +132,30 @@ public class Field {
 		return message;
 	}
 	
-	public void moveLeft() {
+	public boolean moveLeft() {
 		if (now_mino.moveLeft()) {
 			not_move = false;
 			timer.reset();
+			return true;
 		}
+		return false;
 	}
 	
-	public void moveRight() {
+	public boolean moveRight() {
 		if (now_mino.moveRight()) {
 			not_move = false;
 			timer.reset();
+			return true;
 		}
+		return false;
 	}
 	
-	public void moveBottom() {
+	public boolean moveBottom() {
 		if (now_mino.moveBottom()) {
 			not_move = false;
+			return true;
 		}
+		return false;
 	}
 	
 	public void rotateLeft() {
@@ -293,7 +317,7 @@ public class Field {
 			}
 		}
 			
-		System.out.println(tspin + " " + line);
+//		System.out.println(tspin + " " + line);
 			
 	}
 	

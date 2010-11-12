@@ -5,9 +5,9 @@ import java.awt.Point;
 import jp.snowink.tka.Block;
 
 
-public abstract class Mino {
-	
-	private static final int ROTATE_PATTERN = 4;
+public abstract class Mino implements Cloneable{
+
+	public static final int ROTATE_PATTERN = 4;
 	
 	private int mino_size;
 	protected Point start_position;
@@ -73,17 +73,48 @@ public abstract class Mino {
 		return true;
 	}
 	
-	public Point getDropPoint() {
-		if (!check(getPiece(), position.x, position.y, blocks)) {
-			return null;
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		Mino mino = (Mino) super.clone();
+		mino.blocks = new Block[blocks.length][blocks[0].length];
+		for (int x = 0; x < mino.blocks.length; x++) {
+			for (int y = 0; y < mino.blocks[0].length; y++) {
+				mino.blocks[x][y] = (Block) blocks[x][y].clone();
+			}
+			
 		}
-		for (int i = position.y; i >= -mino_size + 1; i--) {
-			if(!check(getPiece(), position.x, i - 1, blocks)) {
-				return new Point(position.x, i);
+		mino.piece = new Block[piece.length][piece[0].length][piece[0][0].length];
+		for (int r = 0; r < mino.piece.length; r++) {
+			for (int x = 0; x < mino.piece[0].length; x++) {
+				for (int y = 0; y < mino.piece[0][0].length; y++) {
+					mino.piece[r][x][y] = (Block) piece[r][x][y].clone();
+				}
 			}
 		}
-		return new Point(position.x, -mino_size + 1);
+		mino.position = (Point) position.clone();
+		mino.start_position = (Point) start_position.clone();
+		return mino;
 	}
+	
+	public Point getDropPoint() {
+		return getDropPoint(position, blocks);
+	}
+	
+	public Point getDropPoint(Point point) {
+		return getDropPoint(point, blocks);
+	}
+	
+	public Point getDropPoint(Point point, Block[][] blocks) {
+		if (!check(getPiece(), point.x, point.y, blocks)) {
+			return null;
+		}
+		for (int i = point.y; i >= -mino_size + 1; i--) {
+			if(!check(getPiece(), point.x, i - 1, blocks)) {
+				return new Point(point.x, i);
+			}
+		}
+		return new Point(point.x, -mino_size + 1);
+	}	
 	
 	public int getMinoSize() {
 		return mino_size;

@@ -2,7 +2,7 @@ package jp.snowink.tka;
 import java.awt.Color;
 
 
-public class Block {
+public class Block implements Cloneable {
 
 	private boolean block = false;
 
@@ -13,6 +13,11 @@ public class Block {
 	private Color shadow_color = Color.GRAY;
 	private Color shadow_color_light = Color.GRAY;
 	private Color shadow_color_dark = Color.GRAY;
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 	
 	public void createBlock() {
 		block = true;
