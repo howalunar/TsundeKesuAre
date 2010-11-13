@@ -5,7 +5,7 @@ import java.awt.Point;
 import jp.snowink.tka.Block;
 
 
-public abstract class Mino implements Cloneable{
+public abstract class Mino implements Cloneable {
 
 	public static final int ROTATE_PATTERN = 4;
 	

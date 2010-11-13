@@ -67,6 +67,15 @@ public class MainWindow extends JFrame implements KeyListener {
 					DataPool.endless_field.getTimer().start();
 					break;
 				case 1:
+					DataPool.load();
+					DataPool.gameover = false;
+					this.getContentPane().remove(menu_panel);
+					this.getContentPane().add(endless_panel, BorderLayout.CENTER);
+					this.getContentPane().validate();
+					active_field = DataPool.endless_field;
+					active_panel = endless_panel;
+					DataPool.endless_field.getTimer().start();
+					new AI(DataPool.endless_field, endless_panel).start();
 					break;
 				case 2:
 					DataPool.load();
@@ -80,7 +89,7 @@ public class MainWindow extends JFrame implements KeyListener {
 //					DataPool.vs_field_2.getTimer().start();
 					DataPool.vs_field_1.setYourField(DataPool.vs_field_2);
 					DataPool.vs_field_2.setYourField(DataPool.vs_field_1);
-					new AI().start();
+					new AI(DataPool.vs_field_2, vs_panel).start();
 					break;
 				case 3:
 					break;

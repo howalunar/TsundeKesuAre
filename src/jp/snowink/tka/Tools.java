@@ -20,14 +20,10 @@ public class Tools {
 
 					while (f.getNowMino().getPosition().x != x) {
 						if (f.getNowMino().getPosition().x > x) {
-							if(!f.moveLeft()) {
-								break;
-							}
+							f.moveLeft();
 						}
 						else {
-							if(f.moveRight()) {
-								break;
-							}
+							f.moveRight();
 						}
 					}
 					f.hardDrop();

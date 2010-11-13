@@ -8,8 +8,13 @@ import javax.swing.JPanel;
 
 public class AI extends Thread {
 	
-	private Field field = DataPool.vs_field_2;
-	private JPanel panel = MainWindow.vs_panel;
+	private Field field;
+	private JPanel panel;
+	
+	public AI(Field field, JPanel panel) {
+		this.field = field;
+		this.panel = panel;
+	}
 	
 	public void run() {
 		
