@@ -159,5 +159,22 @@ public class Tools {
 			}
 		}
 	}
+
+	public static int minHeight(Block[][] ban, int ana) {
+		int min = 99;
+		for (int x = 0; x < ban.length; x++) {
+			if (x != ana) {
+				for (int y = ban[0].length - 1; y >= 0; y--) {
+					if (ban[x][y].isBlock()) {
+						if (y < min) {
+							min = y;
+						}
+							break;
+					}
+				}
+			}
+		}
+		return min + 1;
+	}
 	
 }
