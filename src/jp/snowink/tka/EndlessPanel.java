@@ -144,7 +144,7 @@ public class EndlessPanel extends JPanel {
 		for (int x = 0; x < mino.getMinoSize(); x++) {
 			for (int y = 0; y < mino.getMinoSize(); y++) {
 				if (mino.getPiece()[x][y].isBlock()) {
-					drawBlock(g, size, new Point(point.x + (mino.getDropPoint().x + x) * size, point.y + field.getViewLine() * size - (mino.getDropPoint().y + y + 1) * size), mino.shadow_color, mino.shadow_color_dark, mino.shadow_color_light);
+					drawBlock(g, size, new Point(point.x + (mino.getDropPoint(field.getBan()).x + x) * size, point.y + field.getViewLine() * size - (mino.getDropPoint(field.getBan()).y + y + 1) * size), mino.shadow_color, mino.shadow_color_dark, mino.shadow_color_light);
 				}
 			}
 		}

@@ -13,22 +13,26 @@ public class Tools {
 			for (int x = -field.getNowMino().getMinoSize() + 1; x <= field.getBan().length; x++) {
 				Field f = (Field) field.clone();
 				for (int rr = 0; rr < r; rr++) {
-					f.rotateRight();
+//					f.rotateRight();
+					f.getNowMino().rotateRight(f.getBan());
 				}
-				Point dp = f.getNowMino().getDropPoint(new Point(x, f.getNowMino().getPosition().y));
+				Mino mino = (Mino) f.getNowMino().clone();
+				Point dp = f.getNowMino().getDropPoint(new Point(x, f.getNowMino().getPosition().y), f.getBan());
 				if (dp != null) {
 
 					while (f.getNowMino().getPosition().x != x) {
 						if (f.getNowMino().getPosition().x > x) {
-							f.moveLeft();
+//							f.moveLeft();
+							f.getNowMino().moveLeft(f.getBan());
 						}
 						else {
-							f.moveRight();
+//							f.moveRight();
+							f.getNowMino().moveRight(f.getBan());
 						}
 					}
 					f.hardDrop();
 				
-					moves.add(new Move(f, dp, r));
+					moves.add(new Move(f, mino, dp, r));
 //					System.out.println(f.getNowMino().getDropPoint(new Point(i, f.getNowMino().getPosition().y)) + " (" + r + ")");
 				}
 			}
@@ -36,8 +40,7 @@ public class Tools {
 		return moves;
 	}
 	
-	public static void drop(Field field, Point point, int rotate) {
-		int wait = 500;
+	public static void drop(Field field, Point point, int rotate, int wait) {
 		switch (rotate) {
 		case 0:
 			break;
@@ -84,7 +87,7 @@ public class Tools {
 				}
 			}
 			else {
-				if(field.moveRight()) {
+				if(!field.moveRight()) {
 					break;
 				}
 			}
@@ -117,23 +120,44 @@ public class Tools {
 		return count;
 	}
 
-	public static int dekoboko(Block[][] ban) {
+	public static int dekoboko(Block[][] ban, int ana) {
 		int dekoboko = 0;
 		int mae = 0;
-		int ana = getAna();
 		for (int x = 0; x < ban.length; x++) {
 			if (x != ana) {
-				for (int y = - 1 ; y >= 0; y--) {
+				int ima = 0;
+				for (int y = ban[0].length - 1; y >= 0; y--) {
 					if (ban[x][y].isBlock()) {
-						if (x != 0) {
-							dekoboko += Math.abs(mae - y);
-						}
-							mae = y;
+						ima = y + 1;
+						break;
 					}
 				}
+				if (x != 0) {
+					dekoboko += Math.abs(mae - ima);
+				}
+					mae = ima;
 			}
 		}
 		return dekoboko;
+	}
+	
+	public static void removeAnaMove(ArrayList<Move> moves, int ana) {
+		for (int i = moves.size() - 1; i >= 0 ; i--) {
+			Mino mino = moves.get(i).getMino();
+			boolean remove = false;
+			for (int x = 0; x < mino.getMinoSize(); x++) {
+				for (int y = 0; y < mino.getMinoSize(); y++) {
+					if (mino.getPiece(moves.get(i).getRotate())[x][y].isBlock() && moves.get(i).getPoint().x + x == ana) {
+						remove = true;
+						break;
+					}
+				}
+				if (remove) {
+					moves.remove(i);
+					break;
+				}
+			}
+		}
 	}
 	
 }

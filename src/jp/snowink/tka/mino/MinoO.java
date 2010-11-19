@@ -32,12 +32,17 @@ public class MinoO extends Mino {
 			piece[i[0]][i[1]][i[2]].setShadowColors(shadow_color, shadow_color_light, shadow_color_dark);
 		}
 	}
+
+	@Override
+	public String getName() {
+		return "O";
+	}
 	
-	public boolean rotateLeft() {
+	public boolean rotateLeft(Block[][] blocks) {
 		return true;
 	}
 
-	public boolean rotateRight() {
+	public boolean rotateRight(Block[][] blocks) {
 		return true;
 	}
 	

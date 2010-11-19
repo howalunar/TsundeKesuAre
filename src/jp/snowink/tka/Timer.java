@@ -1,5 +1,7 @@
 package jp.snowink.tka;
 
+import java.awt.Point;
+
 import javax.swing.JPanel;
 
 public class Timer extends Thread implements Cloneable {
@@ -20,10 +22,17 @@ public class Timer extends Thread implements Cloneable {
 	public void run() {
 		
 		
-		while (!DataPool.gameover) {
+		while (!field.isGameOver()) {
+/*			
+			Point dp = field.getNowMino().getDropPoint(field.getBan());
+			
+			if (dp == null) {
+				System.out.println(field.getNowMino().getPosition());
+				break;
+			}
 			
 			// 空中
-			if (field.getNowMino().getPosition().y != field.getNowMino().getDropPoint().y) {
+			if (field.getNowMino().getPosition().y != dp.y) {
 				step++;
 				if (step == 40) {
 					field.moveBottom();
@@ -40,7 +49,7 @@ public class Timer extends Thread implements Cloneable {
 					step2 = 0;
 				}
 			}
-			
+*/			
 			panel.repaint();
 			
 			try {

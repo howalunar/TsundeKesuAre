@@ -66,16 +66,5 @@ public class Block implements Cloneable {
 		this.shadow_color_light = shadow_color_light;
 		this.shadow_color_dark = shadow_color_dark;
 	}
-	
-	public void copyFrom(Block copy) {
-		block = copy.block;
 
-		color = copy.color;
-		color_light = copy.color_light;
-		color_dark = copy.color_dark;
-		
-		shadow_color = copy.shadow_color;
-		shadow_color_light = copy.color_light;
-		shadow_color_dark = copy.color_dark;
-	}
 }

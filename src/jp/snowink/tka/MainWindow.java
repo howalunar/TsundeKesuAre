@@ -24,7 +24,7 @@ public class MainWindow extends JFrame implements KeyListener {
 	public static String[] menus = {"MAN ENDLESS", "COM ENDLESS", "MAN VS. COM", "COM VS. COM", "CONFIG", "ABOUT", "EXIT"};
 	public static int now_menu = 0; 
 	
-	Timer timer_1 = null;;
+	Timer timer_1 = null;
 
 	public MainWindow() {
 				
@@ -152,10 +152,10 @@ public class MainWindow extends JFrame implements KeyListener {
 	
 	public void gameOver() {
 		DataPool.gameover = true;
-//		System.out.println("GAME OVER");
-		this.getContentPane().remove(active_panel);
-		this.getContentPane().add(menu_panel, BorderLayout.CENTER);
-		this.repaint();
+		System.out.println("GAME OVER");
+//		this.getContentPane().remove(active_panel);
+//		this.getContentPane().add(menu_panel, BorderLayout.CENTER);
+//		this.repaint();
 	}
 	
 	

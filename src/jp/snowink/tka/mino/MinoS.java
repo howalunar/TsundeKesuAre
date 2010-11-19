@@ -32,32 +32,37 @@ public class MinoS extends Mino {
 			piece[i[0]][i[1]][i[2]].setShadowColors(shadow_color, shadow_color_light, shadow_color_dark);
 		}
 	}
+
+	@Override
+	public String getName() {
+		return "S";
+	}
 	
-	public boolean rotateLeft() {
+	public boolean rotateLeft(Block[][] ban) {
 		switch (rotate) {
 		
 		case 0:
-			if (check(piece[3], position.x, position.y, blocks)) {
+			if (check(piece[3], position.x, position.y, ban)) {
 				rotate = 3;
 				return true;
 			}
-			else if (check(piece[3], position.x + 1, position.y, blocks)) {
+			else if (check(piece[3], position.x + 1, position.y, ban)) {
 				position.x += 1;
 				rotate = 3;
 				return true;
 			}
-			else if (check(piece[3], position.x + 1, position.y + 1, blocks)) {
+			else if (check(piece[3], position.x + 1, position.y + 1, ban)) {
 				position.x += 1;
 				position.y += 1;
 				rotate = 3;
 				return true;
 			}
-			else if (check(piece[3], position.x, position.y - 2, blocks)) {
+			else if (check(piece[3], position.x, position.y - 2, ban)) {
 				position.y -= 2;
 				rotate = 3;
 				return true;
 			}
-			else if (check(piece[3], position.x + 1, position.y - 2, blocks)) {
+			else if (check(piece[3], position.x + 1, position.y - 2, ban)) {
 				position.x += 1;
 				position.y -= 2;
 				rotate = 3;
@@ -66,27 +71,27 @@ public class MinoS extends Mino {
 			break;
 
 		case 1:
-			if (check(piece[0], position.x, position.y, blocks)) {
+			if (check(piece[0], position.x, position.y, ban)) {
 				rotate = 0;
 				return true;
 			}
-			else if (check(piece[0], position.x + 1, position.y, blocks)) {
+			else if (check(piece[0], position.x + 1, position.y, ban)) {
 				position.x += 1;
 				rotate = 0;
 				return true;
 			}
-			else if (check(piece[0], position.x + 1, position.y - 1, blocks)) {
+			else if (check(piece[0], position.x + 1, position.y - 1, ban)) {
 				position.x += 1;
 				position.y -= 1;
 				rotate = 0;
 				return true;
 			}
-			else if (check(piece[0], position.x, position.y + 2, blocks)) {
+			else if (check(piece[0], position.x, position.y + 2, ban)) {
 				position.y += 2;
 				rotate = 0;
 				return true;
 			}
-			else if (check(piece[0], position.x + 1, position.y + 2, blocks)) {
+			else if (check(piece[0], position.x + 1, position.y + 2, ban)) {
 				position.x += 1;
 				position.y += 2;
 				rotate = 0;
@@ -95,27 +100,27 @@ public class MinoS extends Mino {
 			break;
 
 		case 2:
-			if (check(piece[1], position.x, position.y, blocks)) {
+			if (check(piece[1], position.x, position.y, ban)) {
 				rotate = 1;
 				return true;
 			}
-			else if (check(piece[1], position.x - 1, position.y, blocks)) {
+			else if (check(piece[1], position.x - 1, position.y, ban)) {
 				position.x -= 1;
 				rotate = 1;
 				return true;
 			}
-			else if (check(piece[1], position.x - 1, position.y + 1, blocks)) {
+			else if (check(piece[1], position.x - 1, position.y + 1, ban)) {
 				position.x -= 1;
 				position.y += 1;
 				rotate = 1;
 				return true;
 			}
-			else if (check(piece[1], position.x, position.y - 2, blocks)) {
+			else if (check(piece[1], position.x, position.y - 2, ban)) {
 				position.y -= 2;
 				rotate = 1;
 				return true;
 			}
-			else if (check(piece[1], position.x - 1, position.y - 2, blocks)) {
+			else if (check(piece[1], position.x - 1, position.y - 2, ban)) {
 				position.x -= 1;
 				position.y -= 2;
 				rotate = 1;
@@ -124,27 +129,27 @@ public class MinoS extends Mino {
 			break;
 			
 		case 3:
-			if (check(piece[2], position.x, position.y, blocks)) {
+			if (check(piece[2], position.x, position.y, ban)) {
 				rotate = 2;
 				return true;
 			}
-			else if (check(piece[2], position.x - 1, position.y, blocks)) {
+			else if (check(piece[2], position.x - 1, position.y, ban)) {
 				position.x -= 1;
 				rotate = 2;
 				return true;
 			}
-			else if (check(piece[2], position.x - 1, position.y - 1, blocks)) {
+			else if (check(piece[2], position.x - 1, position.y - 1, ban)) {
 				position.x -= 1;
 				position.y -= 1;
 				rotate = 2;
 				return true;
 			}
-			else if (check(piece[2], position.x, position.y + 2, blocks)) {
+			else if (check(piece[2], position.x, position.y + 2, ban)) {
 				position.y += 2;
 				rotate = 2;
 				return true;
 			}
-			else if (check(piece[1], position.x - 1, position.y + 2, blocks)) {
+			else if (check(piece[1], position.x - 1, position.y + 2, ban)) {
 				position.x -= 1;
 				position.y += 2;
 				rotate = 2;
@@ -156,32 +161,32 @@ public class MinoS extends Mino {
 		return false;
 	}
 	
-	public boolean rotateRight() {
+	public boolean rotateRight(Block[][] ban) {
 
 		switch (rotate) {
 		
 		case 0:
-			if (check(piece[1], position.x, position.y, blocks)) {
+			if (check(piece[1], position.x, position.y, ban)) {
 				rotate = 1;
 				return true;
 			}
-			else if (check(piece[1], position.x - 1, position.y, blocks)) {
+			else if (check(piece[1], position.x - 1, position.y, ban)) {
 				position.x -= 1;
 				rotate = 1;
 				return true;
 			}
-			else if (check(piece[1], position.x - 1, position.y + 1, blocks)) {
+			else if (check(piece[1], position.x - 1, position.y + 1, ban)) {
 				position.x -= 1;
 				position.y += 1;
 				rotate = 1;
 				return true;
 			}
-			else if (check(piece[1], position.x, position.y - 2, blocks)) {
+			else if (check(piece[1], position.x, position.y - 2, ban)) {
 				position.y -= 2;
 				rotate = 1;
 				return true;
 			}
-			else if (check(piece[1], position.x - 1, position.y - 2, blocks)) {
+			else if (check(piece[1], position.x - 1, position.y - 2, ban)) {
 				position.x -= 1;
 				position.y -= 2;
 				rotate = 1;
@@ -190,27 +195,27 @@ public class MinoS extends Mino {
 			break;
 
 		case 1:
-			if (check(piece[2], position.x, position.y, blocks)) {
+			if (check(piece[2], position.x, position.y, ban)) {
 				rotate = 2;
 				return true;
 			}
-			else if (check(piece[2], position.x + 1, position.y, blocks)) {
+			else if (check(piece[2], position.x + 1, position.y, ban)) {
 				position.x += 1;
 				rotate = 2;
 				return true;
 			}
-			else if (check(piece[2], position.x + 1, position.y - 1, blocks)) {
+			else if (check(piece[2], position.x + 1, position.y - 1, ban)) {
 				position.x += 1;
 				position.y -= 1;
 				rotate = 2;
 				return true;
 			}
-			else if (check(piece[2], position.x, position.y + 2, blocks)) {
+			else if (check(piece[2], position.x, position.y + 2, ban)) {
 				position.y += 2;
 				rotate = 2;
 				return true;
 			}
-			else if (check(piece[2], position.x + 1, position.y + 2, blocks)) {
+			else if (check(piece[2], position.x + 1, position.y + 2, ban)) {
 				position.x += 1;
 				position.y += 2;
 				rotate = 2;
@@ -219,27 +224,27 @@ public class MinoS extends Mino {
 			break;
 
 		case 2:
-			if (check(piece[3], position.x, position.y, blocks)) {
+			if (check(piece[3], position.x, position.y, ban)) {
 				rotate = 3;
 				return true;
 			}
-			else if (check(piece[3], position.x + 1, position.y, blocks)) {
+			else if (check(piece[3], position.x + 1, position.y, ban)) {
 				position.x += 1;
 				rotate = 3;
 				return true;
 			}
-			else if (check(piece[3], position.x + 1, position.y + 1, blocks)) {
+			else if (check(piece[3], position.x + 1, position.y + 1, ban)) {
 				position.x += 1;
 				position.y += 1;
 				rotate = 3;
 				return true;
 			}
-			else if (check(piece[3], position.x, position.y - 2, blocks)) {
+			else if (check(piece[3], position.x, position.y - 2, ban)) {
 				position.y -= 2;
 				rotate = 3;
 				return true;
 			}
-			else if (check(piece[3], position.x + 1, position.y - 2, blocks)) {
+			else if (check(piece[3], position.x + 1, position.y - 2, ban)) {
 				position.x += 1;
 				position.y -= 2;
 				rotate = 3;
@@ -248,27 +253,27 @@ public class MinoS extends Mino {
 			break;
 			
 		case 3:
-			if (check(piece[0], position.x, position.y, blocks)) {
+			if (check(piece[0], position.x, position.y, ban)) {
 				rotate = 0;
 				return true;
 			}
-			else if (check(piece[0], position.x - 1, position.y, blocks)) {
+			else if (check(piece[0], position.x - 1, position.y, ban)) {
 				position.x -= 1;
 				rotate = 0;
 				return true;
 			}
-			else if (check(piece[0], position.x - 1, position.y - 1, blocks)) {
+			else if (check(piece[0], position.x - 1, position.y - 1, ban)) {
 				position.x -= 1;
 				position.y -= 1;
 				rotate = 0;
 				return true;
 			}
-			else if (check(piece[0], position.x, position.y + 2, blocks)) {
+			else if (check(piece[0], position.x, position.y + 2, ban)) {
 				position.y += 2;
 				rotate = 0;
 				return true;
 			}
-			else if (check(piece[0], position.x - 1, position.y + 2, blocks)) {
+			else if (check(piece[0], position.x - 1, position.y + 2, ban)) {
 				position.x -= 1;
 				position.y += 2;
 				rotate = 0;

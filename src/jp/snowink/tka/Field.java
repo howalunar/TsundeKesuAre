@@ -9,35 +9,48 @@ import jp.snowink.tka.mino.*;
 
 public class Field implements Cloneable {
 
-	private int max_mino_size = 4;
-	public int getMaxMinoSize() {
-		return max_mino_size;
-	}
-
-	public void setMaxMinoSize(int max_mino_size) {
-		this.max_mino_size = max_mino_size;
-	}
-
-	private Mino now_mino = null;
-	private ArrayList<Mino> next_minos = new ArrayList<Mino>();
-	private Mino hold_mino = null;
+	// cloneメソッドに記述する必要のあるフィールド
 	private Block[][] ban = new Block[10][24];
+	private Mino now_mino = null;
+	private Mino hold_mino = null;
+	private ArrayList<Mino> next_minos = new ArrayList<Mino>();
+	public ArrayList<Mino> minos = new ArrayList<Mino>();
+	
+	private Timer timer;
+	private Field your_field = null;
+	
+	// cloneメソッドに記述する必要のないフィールド
+	private int max_mino_size = 4;
 	private int view_line = 20;
 	private boolean can_hold = true;
 	private int next_mino_volume = 6;
 	private int next_rize = 0;
-	private Timer timer;
 	private int ake = new Random().nextInt(ban.length);
 	private boolean btb = false;
 	private String message = "";
 	private int kakuritsu = 80;
-
 	private boolean not_move = false;
-
 	public boolean ochihajime = true;
+	private boolean gameover = false;
 	
+	public Field(Timer timer) {
+		this.timer = timer;
+		now_mino = getMino();
+		for (int i = 0; i < next_mino_volume; i++) {
+			next_minos.add(getMino());
+		}
+		
+		for (int x = 0; x < ban.length; x++) {
+			for (int y = 0; y < ban[0].length; y++) {
+				ban[x][y] = new Block();
+			}
+		}
+
+	}
 	
-	private Field your_field = null;
+	public boolean canHold() {
+		return can_hold;
+	}
 
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
@@ -51,37 +64,50 @@ public class Field implements Cloneable {
 			for (int y = 0; y < field.ban[0].length; y++) {
 				field.ban[x][y] = (Block) ban[x][y].clone();
 			}
-			
 		}
+		field.minos = (ArrayList<Mino>) minos.clone();
 		field.next_minos = (ArrayList<Mino>) next_minos.clone();
+		
+		field.timer = new Timer();
+		field.your_field = new Field(field.timer);
+		
 		return field;
+	}
+	
+	public void gameOver() {
+		gameover = true;
+	}
+	
+	public int getMaxMinoSize() {
+		return max_mino_size;
+	}
+
+	public void setMaxMinoSize(int max_mino_size) {
+		this.max_mino_size = max_mino_size;
 	}
 	
 	public int getNextRize() {
 		return next_rize;
 	}
+	
+	public Mino getMino() {
+		if (minos.isEmpty()) {
+			minos.add(new MinoI(this, ban));
+			minos.add(new MinoJ(this, ban));
+			minos.add(new MinoL(this, ban));
+			minos.add(new MinoO(this, ban));
+			minos.add(new MinoS(this, ban));
+			minos.add(new MinoT(this, ban));
+			minos.add(new MinoZ(this, ban));
+		}
+		int i = new Random().nextInt(minos.size());
+		Mino m = minos.get(i);
+		minos.remove(i);
+		return m;
+	}
 
 	public void setNextRize(int next_rize) {
 		this.next_rize = next_rize;
-	}
-
-	public ArrayList<Mino> minos = new ArrayList<Mino>();
-	
-	public Field(Timer timer) {
-		this.timer = timer;
-		now_mino = getMino();
-		for (int i = 0; i < next_mino_volume; i++) {
-			next_minos.add(getMino());
-		}
-		
-		for (int i = 0; i < ban.length; i++) {
-			
-			for (int j = 0; j < ban[0].length; j++) {
-				ban[i][j] = new Block();
-			}
-			
-		}
-
 	}
 	
 	public int getKakuritsu() {
@@ -104,24 +130,8 @@ public class Field implements Cloneable {
 		return ban;
 	}
 	
-	public void setBan(Block[][] blocks) {
-		this.ban = blocks;
-	}
-	
 	public int getViewLine() {
 		return view_line;
-	}
-	
-	public boolean canHold() {
-		return can_hold;
-	}
-	
-	public int getNextMinoVolume() {
-		return next_mino_volume;
-	}
-	
-	public void setNextMinoVolume(int next_mino_volume) {
-		this.next_mino_volume = next_mino_volume;
 	}
 	
 	public Timer getTimer() {
@@ -132,8 +142,39 @@ public class Field implements Cloneable {
 		return message;
 	}
 	
+	public int getNextMinoVolume() {
+		return next_mino_volume;
+	}
+	
+	public void hardDrop() {
+		now_mino.hardDrop(ban);
+		setti();
+		timer.reset();
+	}
+	
+	public void hold() {
+		if (hold_mino == null) {
+			hold_mino = now_mino;
+			now_mino = next_minos.get(0);
+			now_mino = next_minos.remove(0);
+			next_minos.add(getMino());
+			can_hold = false;
+		}
+		else if (can_hold) {
+			Mino tmp = now_mino;
+			now_mino = hold_mino;
+			hold_mino = tmp;
+			can_hold = false;
+		}
+		hold_mino.initMino();
+	}
+	
+	public boolean isGameOver() {
+		return gameover;
+	}
+	
 	public boolean moveLeft() {
-		if (now_mino.moveLeft()) {
+		if (now_mino.moveLeft(ban)) {
 			not_move = false;
 			timer.reset();
 			return true;
@@ -142,7 +183,7 @@ public class Field implements Cloneable {
 	}
 	
 	public boolean moveRight() {
-		if (now_mino.moveRight()) {
+		if (now_mino.moveRight(ban)) {
 			not_move = false;
 			timer.reset();
 			return true;
@@ -151,31 +192,57 @@ public class Field implements Cloneable {
 	}
 	
 	public boolean moveBottom() {
-		if (now_mino.moveBottom()) {
+		if (now_mino.moveBottom(ban)) {
 			not_move = false;
 			return true;
 		}
 		return false;
 	}
 	
+	public void rize() {
+		if (next_rize > 0) {
+			for (int y = ban[0].length - 1; y >= next_rize; y--) {
+				for (int x = 0; x < ban.length; x++) {
+					try {
+						ban[x][y] = (Block) ban[x][y - next_rize].clone();
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			int rnd;
+			for (int y = next_rize - 1; y >= 0; y--) {
+				// 一定確率で穴の位置を変更
+				if (new Random().nextInt(100) + 1 > kakuritsu ) {
+					// 再抽選時に同じ値を防ぐ
+					while (ake == (rnd = new Random().nextInt(ban.length))) {}
+					ake = rnd;
+				}
+				for (int x = 0; x < ban.length; x++) {
+					ban[x][y] = new Block();
+					if (x != ake) {
+						ban[x][y].createBlock();
+						ban[x][y].setColors(new Color(128, 128, 128), new Color(255, 255, 255), new Color(64, 64, 64));
+						ban[x][y].setShadowColors(new Color(255, 255, 0), new Color(255, 255, 0), new Color(255, 255, 0));
+					}
+				}
+			}
+			next_rize = 0;
+		}
+	}
+	
 	public void rotateLeft() {
-		if (now_mino.rotateLeft()) {
+		if (now_mino.rotateLeft(ban)) {
 			not_move = true;
 			timer.reset();
 		}
 	}
 
 	public void rotateRight() {
-		if (now_mino.rotateRight()) {
+		if (now_mino.rotateRight(ban)) {
 			not_move = true;
 			timer.reset();
 		}
-	}
-	
-	public void hardDrop() {
-		now_mino.hardDrop();
-		setti();
-		timer.reset();
 	}
 
 	public void lineCheck() {
@@ -212,7 +279,11 @@ public class Field implements Cloneable {
 			}
 			else if (line >= 1) {
 				for (int j = 0; j < ban.length; j++) {
-					ban[j][i - line].copyFrom(ban[j][i]);
+					try {
+						ban[j][i - line] = (Block) ban[j][i].clone();
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			
@@ -321,92 +392,44 @@ public class Field implements Cloneable {
 			
 	}
 	
-	public void rize() {
-		if (next_rize > 0) {
-			for (int y = ban[0].length - 1; y >= next_rize; y--) {
-				for (int x = 0; x < ban.length; x++) {
-					ban[x][y].copyFrom(ban[x][y - next_rize]);
-				}
-			}
-			int rnd;
-			for (int y = next_rize - 1; y >= 0; y--) {
-				// 一定確率で穴の位置を変更
-				if (new Random().nextInt(100) + 1 > kakuritsu ) {
-					// 再抽選時に同じ値を防ぐ
-					while (ake == (rnd = new Random().nextInt(ban.length))) {}
-					ake = rnd;
-				}
-				for (int x = 0; x < ban.length; x++) {
-					ban[x][y] = new Block();
-					if (x != ake) {
-						ban[x][y].createBlock();
-						ban[x][y].setColors(new Color(128, 128, 128), new Color(255, 255, 255), new Color(64, 64, 64));
-						ban[x][y].setShadowColors(new Color(255, 255, 0), new Color(255, 255, 0), new Color(255, 255, 0));
-					}
-				}
-			}
-			next_rize = 0;
-		}
-	}
-	
 	
 	public void setti() {
 		
 		for (int x = 0; x < now_mino.getMinoSize(); x++) {
-			
 			for (int y = 0; y < now_mino.getMinoSize(); y++) {
 				if (now_mino.getPiece()[x][y].isBlock()) {
-					ban[now_mino.getPosition().x + x][now_mino.getPosition().y + y].copyFrom(now_mino.getPiece()[x][y]);
+					try {
+						ban[now_mino.getPosition().x + x][now_mino.getPosition().y + y] = (Block) now_mino.getPiece()[x][y].clone();
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-			
 		}
 		
 		lineCheck();
+		rize();
 		
+		// 新しいミノ出現
 		now_mino = next_minos.get(0);
 		now_mino = next_minos.remove(0);
 		next_minos.add(getMino());
-		can_hold = true;
-		if(!now_mino.check(now_mino.getPiece(), now_mino.getPosition().x, now_mino.getPosition().y, ban)) {
-			TKA.window.gameOver();
+		if(!now_mino.check(now_mino.getPosition(), ban)) {
+			gameOver();
 		}
-		rize();
-		timer.init();
-		ochihajime = true;
+		else {
+			can_hold = true;
+			timer.init();
+			ochihajime = true;
+		}
 	}
 	
-	public Mino getMino() {
-		if (minos.isEmpty()) {
-			minos.add(new MinoI(this, ban));
-			minos.add(new MinoJ(this, ban));
-			minos.add(new MinoL(this, ban));
-			minos.add(new MinoO(this, ban));
-			minos.add(new MinoS(this, ban));
-			minos.add(new MinoT(this, ban));
-			minos.add(new MinoZ(this, ban));
-		}
-		int i = new Random().nextInt(minos.size());
-		Mino m = minos.get(i);
-		minos.remove(i);
-		return m;
+	public void setBan(Block[][] blocks) {
+		this.ban = blocks;
 	}
 	
-	public void hold() {
-		if (hold_mino == null) {
-			hold_mino = now_mino;
-			now_mino = next_minos.get(0);
-			now_mino = next_minos.remove(0);
-			next_minos.add(getMino());
-			can_hold = false;
-		}
-		else if (can_hold) {
-			Mino tmp = now_mino;
-			now_mino = hold_mino;
-			hold_mino = tmp;
-			can_hold = false;
-		}
-		hold_mino.initMino();
+	public void setNextMinoVolume(int next_mino_volume) {
+		this.next_mino_volume = next_mino_volume;
 	}
 
 	public void setKakuritsu(int kakuritsu) {

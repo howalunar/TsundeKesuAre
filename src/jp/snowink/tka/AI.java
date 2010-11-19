@@ -18,21 +18,19 @@ public class AI extends Thread {
 	
 	public void run() {
 		
-		while (!DataPool.gameover) {
+		while (!field.isGameOver()) {
 			if (field.ochihajime) {
 				field.ochihajime = false;
 				execute(field, panel);
 			}
 			
-			
 			try {
-				this.sleep(1000);
+				this.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			
 		}
-		
 		
 	}
 	
@@ -45,34 +43,40 @@ public class AI extends Thread {
 			ArrayList<Move> moves = Tools.getAllMove(field);
 			
 			// 最善手の選択
+//			Tools.removeAnaMove(moves, Tools.getAna());
 			int min_sukima = 99;
-			ArrayList<Move> min_sukima_moves = new ArrayList<Move>();
+			int min_dekoboko = 99;
+			ArrayList<Move> best_moves = new ArrayList<Move>();
 			
 			for (int i = 0; i < moves.size(); i++) {
 				Field f = moves.get(i).getField();
 				int sukima = Tools.getSukima(f.getBan());
-				System.out.print(sukima);
+				int dekoboko = 0;
+//				int dekoboko = Tools.dekoboko(f.getBan(), Tools.getAna());
 				if (sukima < min_sukima) {
 					min_sukima = sukima;
-					min_sukima_moves.clear();
-					min_sukima_moves.add(moves.get(i));
+					min_dekoboko = dekoboko;
+					best_moves.clear();
+					best_moves.add(moves.get(i));
 				}
 				else if (sukima == min_sukima) {
-					min_sukima_moves.add(moves.get(i));
+					if (dekoboko < min_dekoboko) {
+						min_dekoboko = dekoboko;
+						best_moves.clear();
+						best_moves.add(moves.get(i));
+					}
+					else if (dekoboko == min_dekoboko) {
+						best_moves.add(moves.get(i));
+					}
 				}
 			}
-			
-			for (Move i : min_sukima_moves) {
-				System.out.println(i.getPoint() + " (" + i.getRotate() + ")");
-			}
-			
-			int rnd = new Random().nextInt(min_sukima_moves.size());
-			Point szs = min_sukima_moves.get(rnd).getPoint();
-			int szs_r = min_sukima_moves.get(rnd).getRotate();
-			System.out.println(szs + " (" + szs_r + ")");
+
+			int rnd = new Random().nextInt(best_moves.size());
+			Move szs = best_moves.get(rnd);
+			System.out.println(szs);
 			
 			// 最善手の実行
-			Tools.drop(field, szs, szs_r);
+			Tools.drop(field, szs.getPoint(), szs.getRotate(), 50);
 			
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();

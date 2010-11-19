@@ -17,7 +17,6 @@ public abstract class Mino implements Cloneable {
 	protected int rotate;
 	
 	protected Block[][][] piece;
-	protected Block[][] blocks;
 	
 	
 	// Blockの色設定よりもMinoの色設定が優先される……ようにする
@@ -36,9 +35,8 @@ public abstract class Mino implements Cloneable {
 	public Mino(int mino_size, Block[][] blocks, Point start_position, int start_rotate) {
 		
 		this.mino_size = mino_size;
-		piece = new Block[ROTATE_PATTERN][mino_size][mino_size];
 		
-		this.blocks = blocks;
+		piece = new Block[ROTATE_PATTERN][mino_size][mino_size];
 		for (int r = 0; r < ROTATE_PATTERN; r++) {
 			for (int x = 0; x < mino_size; x++) {
 				for (int y = 0; y < mino_size; y++) {
@@ -55,16 +53,20 @@ public abstract class Mino implements Cloneable {
 		
 	}
 	
-	public boolean check(Block[][] piece, int position_x, int position_y, Block[][] blocks) {
+	public boolean check(Point point, Block[][] ban) {
+		return check(getPiece(), point, ban);
+	}
+	
+	public boolean check(Block[][] piece, Point point, Block[][] ban) {
 		for (int x = 0; x < mino_size; x++) {
 			for (int y = 0; y < mino_size; y++) {
 				if (piece[x][y].isBlock()) {
 					// 場外判定
-					if (position_x + x < 0 || position_x + x > blocks.length - 1 || position_y + y < 0 ) {
+					if (point.x + x < 0 || point.x + x > ban.length - 1 || point.y + y < 0 ) {
 						return false;
 					}
 					// かぶり判定
-					if (blocks[position_x + x][position_y + y].isBlock()) {
+					if (ban[point.x + x][point.y + y].isBlock()) {
 						return false;
 					}
 				}
@@ -73,16 +75,13 @@ public abstract class Mino implements Cloneable {
 		return true;
 	}
 	
+	public boolean check(Block[][] piece, int pos_x, int pos_y, Block[][] ban) {
+		return check(piece, new Point(pos_x, pos_y), ban);
+	}
+	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		Mino mino = (Mino) super.clone();
-		mino.blocks = new Block[blocks.length][blocks[0].length];
-		for (int x = 0; x < mino.blocks.length; x++) {
-			for (int y = 0; y < mino.blocks[0].length; y++) {
-				mino.blocks[x][y] = (Block) blocks[x][y].clone();
-			}
-			
-		}
 		mino.piece = new Block[piece.length][piece[0].length][piece[0][0].length];
 		for (int r = 0; r < mino.piece.length; r++) {
 			for (int x = 0; x < mino.piece[0].length; x++) {
@@ -96,20 +95,16 @@ public abstract class Mino implements Cloneable {
 		return mino;
 	}
 	
-	public Point getDropPoint() {
-		return getDropPoint(position, blocks);
+	public Point getDropPoint(Block[][] ban) {
+		return getDropPoint(position, ban);
 	}
 	
-	public Point getDropPoint(Point point) {
-		return getDropPoint(point, blocks);
-	}
-	
-	public Point getDropPoint(Point point, Block[][] blocks) {
-		if (!check(getPiece(), point.x, point.y, blocks)) {
+	public Point getDropPoint(Point point, Block[][] ban) {
+		if (!check(point, ban)) {
 			return null;
 		}
 		for (int i = point.y; i >= -mino_size + 1; i--) {
-			if(!check(getPiece(), point.x, i - 1, blocks)) {
+			if(!check(getPiece(), point.x, i - 1, ban)) {
 				return new Point(point.x, i);
 			}
 		}
@@ -119,6 +114,8 @@ public abstract class Mino implements Cloneable {
 	public int getMinoSize() {
 		return mino_size;
 	}
+	
+	abstract public String getName();
 
 	public Block[][] getPiece() {
 		return piece[rotate];
@@ -137,8 +134,8 @@ public abstract class Mino implements Cloneable {
 		return position;
 	}
 	
-	public void hardDrop() {
-		Point point = getDropPoint();
+	public void hardDrop(Block[][] ban) {
+		Point point = getDropPoint(ban);
 		position.y = point.y;
 	}
 	
@@ -148,32 +145,32 @@ public abstract class Mino implements Cloneable {
 		rotate = start_rotate;
 	}
 	
-	public boolean moveBottom() {
-		if (check(getPiece(), position.x, position.y - 1, blocks)) {
+	public boolean moveBottom(Block[][] ban) {
+		if (check(getPiece(), position.x, position.y - 1, ban)) {
 			position.y--;
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean moveLeft() {
-		if (check(getPiece(), position.x - 1, position.y, blocks)) {
+	public boolean moveLeft(Block[][] ban) {
+		if (check(getPiece(), position.x - 1, position.y, ban)) {
 			position.x--;
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean moveRight() {
-		if (check(getPiece(), position.x + 1, position.y, blocks)) {
+	public boolean moveRight(Block[][] ban) {
+		if (check(getPiece(), position.x + 1, position.y, ban)) {
 			position.x++;
 			return true;
 		}
 		return false;
 	}
 		
-	public abstract boolean rotateLeft();
+	public abstract boolean rotateLeft(Block[][] ban);
 	
-	public abstract boolean rotateRight();
+	public abstract boolean rotateRight(Block[][] ban);
 	
 }
