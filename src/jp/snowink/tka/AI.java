@@ -88,7 +88,7 @@ public class AI extends Thread {
 			System.out.println(szs);
 			
 			// 最善手の実行
-			Tools.drop(field, szs.getPoint(), szs.getRotate(), 200);
+			Tools.drop(field, szs.getPoint(), szs.getRotate(), 50);
 			
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
