@@ -9,6 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import jp.snowink.tka.ai.AI;
+
 
 public class MainWindow extends JFrame implements KeyListener {
 	

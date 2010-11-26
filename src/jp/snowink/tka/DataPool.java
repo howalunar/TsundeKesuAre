@@ -11,7 +11,7 @@ public class DataPool {
 	static Field vs_field_2;
 	
 	public static boolean gameover = true;
-	
+		
 	public static void load() {
 		Timer timer = new Timer();
 		endless_field = new Field(timer);

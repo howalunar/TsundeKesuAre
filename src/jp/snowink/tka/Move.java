@@ -10,12 +10,18 @@ public class Move {
 	private Mino mino;
 	private Point point;
 	private int rotate;
+	private boolean hold = false;
+	
+	public Move(boolean hold) {
+		this.hold = hold;
+	}
 	
 	public Move(Field field, Mino mino, Point point, int rotate) {
 		this.field = field;
 		this.mino = mino;
 		this.point = point;
 		this.rotate = rotate;
+		this.hold = false;
 	}
 
 	public Field getField() {
@@ -47,7 +53,12 @@ public class Move {
 	}
 	
 	public String toString() {
-		return mino.getName() + "(" + rotate + ") [" + point.x + ", " + point.y + "]";
+		if (hold) {
+			return "HOLD";
+		}
+		else {
+			return mino.getName() + "(" + rotate + ") [" + point.x + ", " + point.y + "]";
+		}
 	}
 	
 }

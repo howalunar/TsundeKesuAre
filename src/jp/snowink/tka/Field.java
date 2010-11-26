@@ -16,7 +16,7 @@ public class Field implements Cloneable {
 	private ArrayList<Mino> next_minos = new ArrayList<Mino>();
 	public ArrayList<Mino> minos = new ArrayList<Mino>();
 	
-	private Timer timer;
+	public Timer timer;
 	private Field your_field = null;
 	
 	// cloneメソッドに記述する必要のないフィールド
@@ -32,6 +32,8 @@ public class Field implements Cloneable {
 	private boolean not_move = false;
 	public boolean ochihajime = true;
 	private boolean gameover = false;
+	public int total_line = 0;
+	public int total_attack = 0;
 	
 	public Field(Timer timer) {
 		this.timer = timer;
@@ -53,7 +55,7 @@ public class Field implements Cloneable {
 	}
 
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
+	public Object clone() throws CloneNotSupportedException {
 		Field field = (Field) super.clone();
 		field.now_mino = (Mino) now_mino.clone();
 		if (hold_mino != null) {
@@ -297,56 +299,58 @@ public class Field implements Cloneable {
 		}
 		
 		// 相手に送るライン数
-		if (your_field != null) {
-			if (tspin) {
-				switch (line) {
-				case 1:
-					rize = 2;
-					break;
-				case 2:
-					rize = 4;
-					break;
-				case 3:
-					rize = 6;
-					break;
-				}
+		if (tspin) {
+			switch (line) {
+			case 1:
+				rize = 2;
+				break;
+			case 2:
+				rize = 4;
+				break;
+			case 3:
+				rize = 6;
+				break;
+			}
+			if (btb) {
+				rize += 1;
+			}
+		}
+		else {
+			switch (line) {
+			case 2:
+				rize = 1;
+				break;
+			case 3:
+				rize = 2;
+				break;
+			case 4:
+				rize = 4;
 				if (btb) {
 					rize += 1;
 				}
+				break;
 			}
-			else {
-				switch (line) {
-				case 2:
-					rize = 1;
-					break;
-				case 3:
-					rize = 2;
-					break;
-				case 4:
-					rize = 4;
-					if (btb) {
-						rize += 1;
-					}
-					break;
-				}
-			}
-			
-			if (next_rize > 0) {
-				
-				// 相殺しきれてない
-				if (next_rize >= rize) {
-					next_rize -= rize;
-					rize = 0;
-				}
-				// 相殺できてさらに送れる
-				else {
-					rize -= next_rize;
-					next_rize = 0;
-				}
-			}
-			your_field.setNextRize(your_field.getNextRize() + rize);
+		}
 
+		if (next_rize > 0) {
+				
+			// 相殺しきれてない
+			if (next_rize >= rize) {
+				next_rize -= rize;
+				rize = 0;
+			}
+			// 相殺できてさらに送れる
+			else {
+				rize -= next_rize;
+				next_rize = 0;
+			}
+		}
 		
+		total_line += line;
+		total_attack += rize;
+			
+		if (your_field != null) {
+			your_field.setNextRize(your_field.getNextRize() + rize);
 		}
 		
 		// BTB, メッセージ
@@ -415,6 +419,7 @@ public class Field implements Cloneable {
 		now_mino = next_minos.remove(0);
 		next_minos.add(getMino());
 		if(!now_mino.check(now_mino.getPosition(), ban)) {
+			message = "GAME OVER";
 			gameOver();
 		}
 		else {

@@ -1,15 +1,18 @@
 package jp.snowink.tka;
 
 import java.awt.Point;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.JPanel;
 
 public class Timer extends Thread implements Cloneable {
 	
-	public int step = 0;
-	public int step2 = 0;
+	public int step = 0; // 自動落下のステップ
+	public int step2 = 0; // 接地のステップ
 	public Field field;
 	public JPanel panel;
+	public long start_time = Calendar.getInstance().getTimeInMillis();
 	
 	public void setField(Field field) {
 		this.field = field;
@@ -21,6 +24,7 @@ public class Timer extends Thread implements Cloneable {
 
 	public void run() {
 		
+		start_time = Calendar.getInstance().getTimeInMillis();
 		
 		while (!field.isGameOver()) {
 /*			
@@ -60,6 +64,8 @@ public class Timer extends Thread implements Cloneable {
 			
 		}
 		
+		System.out.println("GAME OVER");
+		
 		
 	}
 	
@@ -67,10 +73,14 @@ public class Timer extends Thread implements Cloneable {
 		step2 = 0;
 	}
 	
+	public long getStartTime() {
+		return start_time;
+	}
+
 	public void init() {
 		step = 0;
 		step2 = 0;
 	}
-
+	
 	
 }
