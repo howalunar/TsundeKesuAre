@@ -10,6 +10,11 @@ public class DataPool {
 	static Field vs_field_1;
 	static Field vs_field_2;
 	
+	public static int joutai = 0;
+	// 0: メニュー画面
+	// 1: ゲーム操作
+	// 2: ゲームオーバー
+	
 	public static boolean gameover = true;
 		
 	public static void load() {

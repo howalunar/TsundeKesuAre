@@ -44,7 +44,7 @@ public class MainWindow extends JFrame implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// メニュー画面の時のキー操作
-		if (DataPool.gameover) {
+		if (DataPool.joutai == 0) {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
 				now_menu = (now_menu + menus.length - 1) % menus.length;
@@ -67,6 +67,7 @@ public class MainWindow extends JFrame implements KeyListener {
 					active_field = DataPool.endless_field;
 					active_panel = endless_panel;
 					DataPool.endless_field.getTimer().start();
+					DataPool.joutai = 1;
 					break;
 				case 1:
 					DataPool.load();
@@ -103,7 +104,7 @@ public class MainWindow extends JFrame implements KeyListener {
 			}
 		}
 		
-		else {
+		else if (DataPool.joutai == 1) {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_LEFT: 
 				active_field.moveLeft();
@@ -139,6 +140,53 @@ public class MainWindow extends JFrame implements KeyListener {
 					press = false;
 				}
 				break;
+			}
+		}
+		else if (DataPool.joutai == 2) {
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+				EndlessPanel.now_menu = (EndlessPanel.now_menu + EndlessPanel.menus.length - 1) % menus.length;
+				endless_panel.repaint();
+			break;
+			
+			case KeyEvent.VK_DOWN:
+				EndlessPanel.now_menu = (EndlessPanel.now_menu + EndlessPanel.menus.length + 1) % EndlessPanel.menus.length;
+				endless_panel.repaint();
+			break;
+			
+			case KeyEvent.VK_ENTER:
+				switch (EndlessPanel.now_menu) {
+				case 0:
+//					this.getContentPane().remove(active_panel);
+//					this.getContentPane().add(menu_panel, BorderLayout.CENTER);
+					this.repaint();
+					DataPool.joutai = 0;
+					EndlessPanel.now_menu = 0;
+					DataPool.load();
+					DataPool.gameover = false;
+//					this.getContentPane().remove(menu_panel);
+//					this.getContentPane().add(endless_panel, BorderLayout.CENTER);
+					this.getContentPane().validate();
+					active_field = DataPool.endless_field;
+					active_panel = endless_panel;
+					DataPool.endless_field.getTimer().start();
+					DataPool.joutai = 1;
+					EndlessPanel.menus[2] = "つ△";
+				break;
+				case 1:
+					this.getContentPane().remove(active_panel);
+					this.getContentPane().add(menu_panel, BorderLayout.CENTER);
+					this.repaint();
+					DataPool.joutai = 0;
+					EndlessPanel.now_menu = 0;
+					EndlessPanel.menus[2] = "つ△";
+				break;
+				case 2:
+					EndlessPanel.menus[2] = "ﾏﾃｗｗｗ";
+					this.repaint();
+				break;
+				}
+			break;
 			}
 		}
 	}

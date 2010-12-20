@@ -78,6 +78,7 @@ public class Field implements Cloneable {
 	
 	public void gameOver() {
 		gameover = true;
+		DataPool.joutai = 2;
 	}
 	
 	public int getMaxMinoSize() {
