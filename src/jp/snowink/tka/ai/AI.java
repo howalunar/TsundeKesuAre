@@ -6,6 +6,7 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 
+import jp.snowink.tka.Controller;
 import jp.snowink.tka.Field;
 import jp.snowink.tka.Move;
 import jp.snowink.tka.mino.Mino;
@@ -13,24 +14,24 @@ import jp.snowink.tka.mino.MinoI;
 
 public class AI extends Thread {
 	
-	private Field field;
+	private Controller field;
 	private JPanel panel;
 	
-	public AI(Field field, JPanel panel) {
+	public AI(Controller field, JPanel panel) {
 		this.field = field;
 		this.panel = panel;
 	}
 	
 	public void run() {
 		
-		while (!field.isGameOver()) {
-			if (field.ochihajime) {
-				field.ochihajime = false;
+		while (!field.getField().isGameOver()) {
+			if (field.getField().ochihajime) {
+				field.getField().ochihajime = false;
 				execute(field, panel);
 			}
 			
 			try {
-				this.sleep(100);
+				this.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -41,16 +42,17 @@ public class AI extends Thread {
 	
 	
 	
-	public void execute(Field field, JPanel panel) {
+	public void execute(Controller field, JPanel panel) {
 		Move szs;
-		
+
 		try {
 			
-			if (field.getNowMino() instanceof MinoI && AITools.minHeight(field.getBan(), AITools.getAna()) >= 4) {
-				szs = new Move(field, field.getNowMino(), new Point(7, 17), 1);
+			if (field.getField().getNowMino() instanceof MinoI && AITools.minHeight(field.getField().getBan(), AITools.getAna()) >= 4) {
+				szs = new Move(field.getField(), field.getField().getNowMino(), new Point(7, 17), 1);
 			}
 			
 			else {
+
 			// 手の検索
 			ArrayList<Move> moves = AITools.getAllMove(field);
 			
@@ -91,6 +93,8 @@ public class AI extends Thread {
 			
 			// 最善手の実行
 			AITools.drop(field, szs.getPoint(), szs.getRotate(), 50);
+			
+
 			
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();

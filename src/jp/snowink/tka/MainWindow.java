@@ -19,6 +19,7 @@ public class MainWindow extends JFrame implements KeyListener {
 	public static JPanel vs_panel = new VsPanel();
 	
 	public static Field active_field;
+	public static Controller active_timer;
 	public static JPanel active_panel;
 	
 	public static boolean press = true;
@@ -26,7 +27,7 @@ public class MainWindow extends JFrame implements KeyListener {
 	public static String[] menus = {"MAN ENDLESS", "COM ENDLESS", "MAN VS. COM", "COM VS. COM", "CONFIG", "ABOUT", "EXIT"};
 	public static int now_menu = 0; 
 	
-	Timer timer_1 = null;
+	Controller timer_1 = null;
 
 	public MainWindow() {
 				
@@ -65,8 +66,9 @@ public class MainWindow extends JFrame implements KeyListener {
 					this.getContentPane().add(endless_panel, BorderLayout.CENTER);
 					this.getContentPane().validate();
 					active_field = DataPool.endless_field;
+					active_timer = DataPool.endless_timer;
 					active_panel = endless_panel;
-					DataPool.endless_field.getTimer().start();
+					active_timer.start();
 					DataPool.joutai = 1;
 					break;
 				case 1:
@@ -77,8 +79,8 @@ public class MainWindow extends JFrame implements KeyListener {
 					this.getContentPane().validate();
 					active_field = DataPool.endless_field;
 					active_panel = endless_panel;
-					DataPool.endless_field.getTimer().start();
-					new AI(DataPool.endless_field, endless_panel).start();
+					active_timer.start();
+					new AI(DataPool.endless_timer, endless_panel).start();
 					break;
 				case 2:
 					DataPool.load();
@@ -87,12 +89,14 @@ public class MainWindow extends JFrame implements KeyListener {
 					this.getContentPane().add(vs_panel, BorderLayout.CENTER);
 					this.getContentPane().validate();
 					active_field = DataPool.vs_field_1;
+					active_timer = DataPool.vs_ftimer_1;
 					active_panel = vs_panel;
-					DataPool.vs_field_1.getTimer().start();
+					active_timer.start();
+					DataPool.joutai = 1;
 //					DataPool.vs_field_2.getTimer().start();
 					DataPool.vs_field_1.setYourField(DataPool.vs_field_2);
 					DataPool.vs_field_2.setYourField(DataPool.vs_field_1);
-					new AI(DataPool.vs_field_2, vs_panel).start();
+					new AI(DataPool.vs_ftimer_2, vs_panel).start();
 					break;
 				case 3:
 					break;
@@ -107,35 +111,35 @@ public class MainWindow extends JFrame implements KeyListener {
 		else if (DataPool.joutai == 1) {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_LEFT: 
-				active_field.moveLeft();
+				active_timer.moveLeft();
 				active_panel.repaint();
 				break;
 			case KeyEvent.VK_DOWN:
-				active_field.moveBottom();
+				active_timer.moveBottom();
 				active_panel.repaint();
 				break;
 			case KeyEvent.VK_RIGHT:
-				active_field.moveRight();
+				active_timer.moveRight();
 				active_panel.repaint();
 				break;
 			case KeyEvent.VK_UP:
-				active_field.hardDrop();
+				active_timer.hardDrop();
 				active_panel.repaint();
 				break;
 			case KeyEvent.VK_Z:
-				active_field.hold();
+				active_timer.hold();
 				active_panel.repaint();
 				break;
 			case KeyEvent.VK_X:
 				if (press) {
-					active_field.rotateLeft();
+					active_timer.rotateLeft();
 					active_panel.repaint();
 					press = false;
 				}
 				break;
 			case KeyEvent.VK_C:
 				if (press) {
-					active_field.rotateRight();
+					active_timer.rotateRight();
 					active_panel.repaint();
 					press = false;
 				}
@@ -168,8 +172,9 @@ public class MainWindow extends JFrame implements KeyListener {
 //					this.getContentPane().add(endless_panel, BorderLayout.CENTER);
 					this.getContentPane().validate();
 					active_field = DataPool.endless_field;
+					active_timer = DataPool.endless_timer;
 					active_panel = endless_panel;
-					DataPool.endless_field.getTimer().start();
+					active_timer.start();
 					DataPool.joutai = 1;
 					EndlessPanel.menus[2] = "つ△";
 				break;

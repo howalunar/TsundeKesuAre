@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import jp.snowink.tka.Block;
 import jp.snowink.tka.Field;
 import jp.snowink.tka.Move;
+import jp.snowink.tka.Controller;
 import jp.snowink.tka.mino.*;
 
 public class AITools {
@@ -31,12 +32,12 @@ public class AITools {
 		return dekoboko;
 	}
 	
-	public static void drop(Field field, Point point, int rotate, int wait) {
+	public static void drop(Controller c, Point point, int rotate, int wait) {
 		switch (rotate) {
 		case 0:
 			break;
 		case 1:
-			field.rotateRight();
+			c.rotateRight();
 			try {
 				Thread.sleep(wait);
 			} catch (InterruptedException e) {
@@ -44,13 +45,13 @@ public class AITools {
 			}
 			break;
 		case 2:
-			field.rotateRight();
+			c.rotateRight();
 			try {
 				Thread.sleep(wait);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			field.rotateRight();
+			c.rotateRight();
 			try {
 				Thread.sleep(wait);
 			} catch (InterruptedException e) {
@@ -58,7 +59,7 @@ public class AITools {
 			}
 			break;
 		case 3:
-			field.rotateLeft();
+			c.rotateLeft();
 			try {
 				Thread.sleep(wait);
 			} catch (InterruptedException e) {
@@ -66,19 +67,19 @@ public class AITools {
 			}
 			break;
 		}
-		while (field.getNowMino().getPosition().x != point.x) {
+		while (c.getField().getNowMino().getPosition().x != point.x) {
 			try {
 				Thread.sleep(wait);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if (field.getNowMino().getPosition().x > point.x) {
-				if(!field.moveLeft()) {
+			if (c.getField().getNowMino().getPosition().x > point.x) {
+				if(!c.moveLeft()) {
 					break;
 				}
 			}
 			else {
-				if(!field.moveRight()) {
+				if(!c.moveRight()) {
 					break;
 				}
 			}
@@ -88,14 +89,14 @@ public class AITools {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		field.hardDrop();
+		c.hardDrop();
 	}
 	
-	public static ArrayList<Move> getAllMove(Field field) throws CloneNotSupportedException {
+	public static ArrayList<Move> getAllMove(Controller c) throws CloneNotSupportedException {
 		ArrayList<Move> moves = new ArrayList<Move>();
 		
 		int[] rp;
-		Mino m = field.getNowMino();
+		Mino m = c.getField().getNowMino();
 		if (m instanceof MinoO) {
 			rp = new int[]{0};
 		}
@@ -109,8 +110,8 @@ public class AITools {
 		
 		
 		for (int r : rp) {
-			for (int x = -field.getNowMino().getMinoSize() + 1; x <= field.getBan().length; x++) {
-				Field f = (Field) field.clone();
+			for (int x = -c.getField().getNowMino().getMinoSize() + 1; x <= c.getField().getBan().length; x++) {
+				Field f = c.getField();
 				for (int rr = 0; rr < r; rr++) {
 //					f.rotateRight();
 					f.getNowMino().rotateRight(f.getBan());
@@ -129,7 +130,7 @@ public class AITools {
 							f.getNowMino().moveRight(f.getBan());
 						}
 					}
-					f.hardDrop();
+					c.hardDrop();
 				
 					moves.add(new Move(f, mino, dp, r));
 //					System.out.println(f.getNowMino().getDropPoint(new Point(i, f.getNowMino().getPosition().y)) + " (" + r + ")");

@@ -16,7 +16,6 @@ public class Field implements Cloneable {
 	private ArrayList<Mino> next_minos = new ArrayList<Mino>();
 	public ArrayList<Mino> minos = new ArrayList<Mino>();
 	
-	public Timer timer;
 	private Field your_field = null;
 	
 	// cloneメソッドに記述する必要のないフィールド
@@ -34,9 +33,9 @@ public class Field implements Cloneable {
 	private boolean gameover = false;
 	public int total_line = 0;
 	public int total_attack = 0;
+	boolean clone = false;
 	
-	public Field(Timer timer) {
-		this.timer = timer;
+	public Field() {
 		now_mino = getMino();
 		for (int i = 0; i < next_mino_volume; i++) {
 			next_minos.add(getMino());
@@ -47,7 +46,6 @@ public class Field implements Cloneable {
 				ban[x][y] = new Block();
 			}
 		}
-
 	}
 	
 	public boolean canHold() {
@@ -70,14 +68,18 @@ public class Field implements Cloneable {
 		field.minos = (ArrayList<Mino>) minos.clone();
 		field.next_minos = (ArrayList<Mino>) next_minos.clone();
 		
-		field.timer = new Timer();
-		field.your_field = new Field(field.timer);
+		field.your_field = null;
+		
+		field.clone = true;
 		
 		return field;
 	}
 	
 	public void gameOver() {
 		gameover = true;
+		if (!clone) {
+			timer.gameOver();
+		}
 		DataPool.joutai = 2;
 	}
 	
@@ -137,10 +139,6 @@ public class Field implements Cloneable {
 		return view_line;
 	}
 	
-	public Timer getTimer() {
-		return timer;
-	}
-	
 	public String getMessage() {
 		return message;
 	}
@@ -149,58 +147,72 @@ public class Field implements Cloneable {
 		return next_mino_volume;
 	}
 	
-	public void hardDrop() {
-		now_mino.hardDrop(ban);
-		setti();
-		timer.reset();
-	}
+//	public void hardDrop() {
+//		now_mino.hardDrop(ban);
+//		setti();
+//		if (!clone) {
+//			timer.reset();
+//		}
+//	}
+//	
+//	public void hold() {
+//		if (hold_mino == null) {
+//			hold_mino = now_mino;
+//			now_mino = next_minos.get(0);
+//			next_minos.remove(0);
+//			next_minos.add(getMino());
+//			can_hold = false;
+//		}
+//		else if (can_hold) {
+//			Mino tmp = now_mino;
+//			now_mino = hold_mino;
+//			hold_mino = tmp;
+//			can_hold = false;
+//		}
+//		hold_mino.initMino();
+//	}
 	
-	public void hold() {
-		if (hold_mino == null) {
-			hold_mino = now_mino;
-			now_mino = next_minos.get(0);
-			now_mino = next_minos.remove(0);
-			next_minos.add(getMino());
-			can_hold = false;
-		}
-		else if (can_hold) {
-			Mino tmp = now_mino;
-			now_mino = hold_mino;
-			hold_mino = tmp;
-			can_hold = false;
-		}
-		hold_mino.initMino();
+	public boolean isCanHold() {
+		return can_hold;
 	}
 	
 	public boolean isGameOver() {
 		return gameover;
 	}
 	
-	public boolean moveLeft() {
-		if (now_mino.moveLeft(ban)) {
-			not_move = false;
-			timer.reset();
-			return true;
-		}
-		return false;
+	public boolean isNotMove() {
+		return not_move;
 	}
 	
-	public boolean moveRight() {
-		if (now_mino.moveRight(ban)) {
-			not_move = false;
-			timer.reset();
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean moveBottom() {
-		if (now_mino.moveBottom(ban)) {
-			not_move = false;
-			return true;
-		}
-		return false;
-	}
+//	public boolean moveLeft() {
+//		if (now_mino.moveLeft(ban)) {
+//			not_move = false;
+//			if (!clone) {
+//				timer.reset();
+//			}
+//			return true;
+//		}
+//		return false;
+//	}
+//	
+//	public boolean moveRight() {
+//		if (now_mino.moveRight(ban)) {
+//			not_move = false;
+//			if (!clone) {
+//				timer.reset();
+//			}
+//			return true;
+//		}
+//		return false;
+//	}
+//	
+//	public boolean moveBottom() {
+//		if (now_mino.moveBottom(ban)) {
+//			not_move = false;
+//			return true;
+//		}
+//		return false;
+//	}
 	
 	public void rize() {
 		if (next_rize > 0) {
@@ -234,19 +246,23 @@ public class Field implements Cloneable {
 		}
 	}
 	
-	public void rotateLeft() {
-		if (now_mino.rotateLeft(ban)) {
-			not_move = true;
-			timer.reset();
-		}
-	}
-
-	public void rotateRight() {
-		if (now_mino.rotateRight(ban)) {
-			not_move = true;
-			timer.reset();
-		}
-	}
+//	public void rotateLeft() {
+//		if (now_mino.rotateLeft(ban)) {
+//			not_move = true;
+//			if (!clone) {
+//				timer.reset();
+//			}
+//		}
+//	}
+//
+//	public void rotateRight() {
+//		if (now_mino.rotateRight(ban)) {
+//			not_move = true;
+//			if (!clone) {
+//				timer.reset();
+//			}
+//		}
+//	}
 
 	public void lineCheck() {
 		boolean tspin = false;
@@ -417,7 +433,7 @@ public class Field implements Cloneable {
 		
 		// 新しいミノ出現
 		now_mino = next_minos.get(0);
-		now_mino = next_minos.remove(0);
+		next_minos.remove(0);
 		next_minos.add(getMino());
 		if(!now_mino.check(now_mino.getPosition(), ban)) {
 			message = "GAME OVER";
@@ -425,7 +441,9 @@ public class Field implements Cloneable {
 		}
 		else {
 			can_hold = true;
-			timer.init();
+			if (!clone) {
+				timer.init();
+			}
 			ochihajime = true;
 		}
 	}
@@ -434,8 +452,32 @@ public class Field implements Cloneable {
 		this.ban = blocks;
 	}
 	
+	public void setCanHold(boolean can_hold) {
+		this.can_hold = can_hold;
+	}
+	
+	public void setHoldMino(Mino hold_mino) {
+		this.hold_mino = hold_mino;
+	}
+	
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
 	public void setNextMinoVolume(int next_mino_volume) {
 		this.next_mino_volume = next_mino_volume;
+	}
+	
+	public void setNotMove(boolean not_move) {
+		this.not_move = not_move;
+	}
+	
+	public void setNowMino(Mino now_mino) {
+		this.now_mino = now_mino;
+	}
+	
+	public void setOchihajime(boolean ochihajime) {
+		this.ochihajime = ochihajime;
 	}
 
 	public void setKakuritsu(int kakuritsu) {

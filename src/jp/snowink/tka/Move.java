@@ -6,7 +6,8 @@ import jp.snowink.tka.mino.Mino;
 
 public class Move {
 	
-	private Field field;
+	private Controller c;
+
 	private Mino mino;
 	private Point point;
 	private int rotate;
@@ -17,19 +18,23 @@ public class Move {
 	}
 	
 	public Move(Field field, Mino mino, Point point, int rotate) {
-		this.field = field;
+		this.c = new Controller(field);
 		this.mino = mino;
 		this.point = point;
 		this.rotate = rotate;
 		this.hold = false;
 	}
 
-	public Field getField() {
-		return field;
+	public Controller getController() {
+		return c;
 	}
 
-	public void setField(Field field) {
-		this.field = field;
+	public void setController(Controller c) {
+		this.c = c;
+	}
+	
+	public Field getField() {
+		return c.getField();
 	}
 	
 	public Mino getMino() {

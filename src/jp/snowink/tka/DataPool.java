@@ -5,10 +5,13 @@ import java.util.Random;
 
 public class DataPool {
 	
-	static Field endless_field;
+	public static Field endless_field;
+	public static Controller endless_timer;
 	
-	static Field vs_field_1;
-	static Field vs_field_2;
+	public static Field vs_field_1;
+	public static Controller vs_ftimer_1;
+	public static Field vs_field_2;
+	public static Controller vs_ftimer_2;
 	
 	public static int joutai = 0;
 	// 0: メニュー画面
@@ -18,21 +21,14 @@ public class DataPool {
 	public static boolean gameover = true;
 		
 	public static void load() {
-		Timer timer = new Timer();
-		endless_field = new Field(timer);
-		timer.setField(DataPool.endless_field);
-		timer.setPanel(MainWindow.endless_panel);
+		endless_field = new Field();
+		endless_timer = new Controller(endless_field, MainWindow.endless_panel);
 		
-		Timer timer_1 = new Timer();
-		vs_field_1 = new Field(timer_1);
-		timer_1.setField(DataPool.vs_field_1);
-		timer_1.setPanel(MainWindow.vs_panel);
+		vs_field_1 = new Field();
+		vs_ftimer_1 = new Controller(vs_field_1, MainWindow.vs_panel);
 		
-		Timer timer_2 = new Timer();
-		vs_field_2 = new Field(timer_2);
-		timer_2.setField(DataPool.vs_field_2);
-		timer_2.setPanel(MainWindow.vs_panel);
+		vs_field_2 = new Field();
+		vs_ftimer_2 = new Controller(vs_field_2, MainWindow.vs_panel);
 	}
-	
 
 }
