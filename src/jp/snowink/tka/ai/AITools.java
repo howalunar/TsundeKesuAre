@@ -111,26 +111,23 @@ public class AITools {
 		
 		for (int r : rp) {
 			for (int x = -c.getField().getNowMino().getMinoSize() + 1; x <= c.getField().getBan().length; x++) {
-				Field f = c.getField();
+				Controller f = new Controller(c.getField());
 				for (int rr = 0; rr < r; rr++) {
-//					f.rotateRight();
-					f.getNowMino().rotateRight(f.getBan());
+					f.rotateRight();
 				}
-				Mino mino = (Mino) f.getNowMino().clone();
-				Point dp = f.getNowMino().getDropPoint(new Point(x, f.getNowMino().getPosition().y), f.getBan());
+				Mino mino = (Mino) f.getField().getNowMino().clone();
+				Point dp = f.getField().getNowMino().getDropPoint(new Point(x, f.getField().getNowMino().getPosition().y), f.getField().getBan());
 				if (dp != null) {
 
-					while (f.getNowMino().getPosition().x != x) {
-						if (f.getNowMino().getPosition().x > x) {
-//							f.moveLeft();
-							f.getNowMino().moveLeft(f.getBan());
+					while (f.getField().getNowMino().getPosition().x != x) {
+						if (f.getField().getNowMino().getPosition().x > x) {
+							f.moveLeft();
 						}
 						else {
-//							f.moveRight();
-							f.getNowMino().moveRight(f.getBan());
+							f.moveRight();
 						}
 					}
-					c.hardDrop();
+					f.hardDrop();
 				
 					moves.add(new Move(f, mino, dp, r));
 //					System.out.println(f.getNowMino().getDropPoint(new Point(i, f.getNowMino().getPosition().y)) + " (" + r + ")");
@@ -141,7 +138,7 @@ public class AITools {
 	}
 	
 	public static int getAna() {
-		return 99;
+		return 9;
 	}
 	
 	public static int getSukima(Block[][] ban) {

@@ -16,6 +16,8 @@ public class EndlessPanel extends JPanel {
 	
 	public static String[] menus = {"リトライ", "メニューに戻る", "つ△"};
 	public static int now_menu = 0;
+	
+	private long start_time;
 
 	
 	public void paintComponent(Graphics g) {
@@ -58,9 +60,13 @@ public class EndlessPanel extends JPanel {
 			DrawTools.drawMessage(g, my_field, 12, new Point(cp_1.x, cp_1.y + 240));
 		
 			// TIME
-			DrawTools.drawTime(g, my_field, 12, new Point(240, 40));
+			DrawTools.drawTime(g, my_field, 12, new Point(240, 40), start_time);
 		}
 		
+	}
+	
+	public void setStartTime(long start_time) {
+		this.start_time = start_time;
 	}
 		
 }

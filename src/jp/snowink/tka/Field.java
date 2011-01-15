@@ -48,6 +48,14 @@ public class Field implements Cloneable {
 		}
 	}
 	
+	public void addTotalAttack(int rize) {
+		total_attack += rize;
+	}
+	
+	public void addTotalLines(int line) {
+		total_line += line;
+	}
+	
 	public boolean canHold() {
 		return can_hold;
 	}
@@ -77,10 +85,18 @@ public class Field implements Cloneable {
 	
 	public void gameOver() {
 		gameover = true;
-		if (!clone) {
-			timer.gameOver();
-		}
-		DataPool.joutai = 2;
+	}
+	
+//	public void gameOver() {
+//		gameover = true;
+//		if (!clone) {
+//			timer.gameOver();
+//		}
+//		DataPool.joutai = 2;
+//	}
+	
+	public int getAke() {
+		return ake;
 	}
 	
 	public int getMaxMinoSize() {
@@ -109,10 +125,6 @@ public class Field implements Cloneable {
 		Mino m = minos.get(i);
 		minos.remove(i);
 		return m;
-	}
-
-	public void setNextRize(int next_rize) {
-		this.next_rize = next_rize;
 	}
 	
 	public int getKakuritsu() {
@@ -147,6 +159,10 @@ public class Field implements Cloneable {
 		return next_mino_volume;
 	}
 	
+	public Field getYourFiled() {
+		return your_field;
+	}
+	
 //	public void hardDrop() {
 //		now_mino.hardDrop(ban);
 //		setti();
@@ -171,6 +187,10 @@ public class Field implements Cloneable {
 //		}
 //		hold_mino.initMino();
 //	}
+	
+	public boolean isBTB() {
+		return btb;
+	}
 	
 	public boolean isCanHold() {
 		return can_hold;
@@ -214,37 +234,37 @@ public class Field implements Cloneable {
 //		return false;
 //	}
 	
-	public void rize() {
-		if (next_rize > 0) {
-			for (int y = ban[0].length - 1; y >= next_rize; y--) {
-				for (int x = 0; x < ban.length; x++) {
-					try {
-						ban[x][y] = (Block) ban[x][y - next_rize].clone();
-					} catch (CloneNotSupportedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			int rnd;
-			for (int y = next_rize - 1; y >= 0; y--) {
-				// 一定確率で穴の位置を変更
-				if (new Random().nextInt(100) + 1 > kakuritsu ) {
-					// 再抽選時に同じ値を防ぐ
-					while (ake == (rnd = new Random().nextInt(ban.length))) {}
-					ake = rnd;
-				}
-				for (int x = 0; x < ban.length; x++) {
-					ban[x][y] = new Block();
-					if (x != ake) {
-						ban[x][y].createBlock();
-						ban[x][y].setColors(new Color(128, 128, 128), new Color(255, 255, 255), new Color(64, 64, 64));
-						ban[x][y].setShadowColors(new Color(255, 255, 0), new Color(255, 255, 0), new Color(255, 255, 0));
-					}
-				}
-			}
-			next_rize = 0;
-		}
-	}
+//	public void rize() {
+//		if (next_rize > 0) {
+//			for (int y = ban[0].length - 1; y >= next_rize; y--) {
+//				for (int x = 0; x < ban.length; x++) {
+//					try {
+//						ban[x][y] = (Block) ban[x][y - next_rize].clone();
+//					} catch (CloneNotSupportedException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//			int rnd;
+//			for (int y = next_rize - 1; y >= 0; y--) {
+//				// 一定確率で穴の位置を変更
+//				if (new Random().nextInt(100) + 1 > kakuritsu ) {
+//					// 再抽選時に同じ値を防ぐ
+//					while (ake == (rnd = new Random().nextInt(ban.length))) {}
+//					ake = rnd;
+//				}
+//				for (int x = 0; x < ban.length; x++) {
+//					ban[x][y] = new Block();
+//					if (x != ake) {
+//						ban[x][y].createBlock();
+//						ban[x][y].setColors(new Color(128, 128, 128), new Color(255, 255, 255), new Color(64, 64, 64));
+//						ban[x][y].setShadowColors(new Color(255, 255, 0), new Color(255, 255, 0), new Color(255, 255, 0));
+//					}
+//				}
+//			}
+//			next_rize = 0;
+//		}
+//	}
 	
 //	public void rotateLeft() {
 //		if (now_mino.rotateLeft(ban)) {
@@ -264,192 +284,200 @@ public class Field implements Cloneable {
 //		}
 //	}
 
-	public void lineCheck() {
-		boolean tspin = false;
-		int line = 0;
-		int rize = 0;
-//		message = "";
-		
-		if (now_mino instanceof MinoT && not_move) {
-			int count = 0;
-			Point[] kado = {new Point(0, 1), new Point(0, 3), new Point(2, 1), new Point(2, 3)};
-			for (Point i : kado) {
-				if (now_mino.getPosition().x + i.x < 0 || now_mino.getPosition().x + i.x >= ban.length || now_mino.getPosition().y + i.y < 0 || ban[now_mino.getPosition().x + i.x][now_mino.getPosition().y + i.y].isBlock()) {
-					count++;
-				}
-			}
-			if (count >= 3) {
-				tspin = true;
-			}
-		}
-		
-		for (int i = 0; i < ban[0].length; i++) {
-			boolean line_clear_flag = true;
-			
-			for (int k = 0; k < ban.length; k++) {
-				if (!ban[k][i].isBlock()) {
-					line_clear_flag = false;
-				}
-			}
-			
-			
-			if (line_clear_flag) {
-				line++;
-			}
-			else if (line >= 1) {
-				for (int j = 0; j < ban.length; j++) {
-					try {
-						ban[j][i - line] = (Block) ban[j][i].clone();
-					} catch (CloneNotSupportedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			
-		}
-		if (line >= 1) {
-			for (int i = ban[0].length; i >= ban[0].length - line - 1; i--) {
-				for (int j = 0; j < ban.length; j++) {
-					ban[j][ban[0].length - 1] = new Block();
-				}
-			}
-		}
-		
-		// 相手に送るライン数
-		if (tspin) {
-			switch (line) {
-			case 1:
-				rize = 2;
-				break;
-			case 2:
-				rize = 4;
-				break;
-			case 3:
-				rize = 6;
-				break;
-			}
-			if (btb) {
-				rize += 1;
-			}
-		}
-		else {
-			switch (line) {
-			case 2:
-				rize = 1;
-				break;
-			case 3:
-				rize = 2;
-				break;
-			case 4:
-				rize = 4;
-				if (btb) {
-					rize += 1;
-				}
-				break;
-			}
-		}
-
-		if (next_rize > 0) {
-				
-			// 相殺しきれてない
-			if (next_rize >= rize) {
-				next_rize -= rize;
-				rize = 0;
-			}
-			// 相殺できてさらに送れる
-			else {
-				rize -= next_rize;
-				next_rize = 0;
-			}
-		}
-		
-		total_line += line;
-		total_attack += rize;
-			
-		if (your_field != null) {
-			your_field.setNextRize(your_field.getNextRize() + rize);
-		}
-		
-		// BTB, メッセージ
-		if (tspin) {
-			switch (line) {
-			case 0:
-				message = "T-SPIN";
-				break;
-			case 1:
-				message = "T-SPIN SINGLE";
-				break;
-			case 2:
-				message = "T-SPIN DOUBLE";
-				break;
-			case 3:
-				message = "T-SPIN TRIPLE";
-				break;
-			}
-			if (line >= 1) {
-				if (btb) {
-					message = "BACK TO BACK " +  message;
-				}
-				btb = true;
-			}
-		}
-		else {
-			switch (line) {
-			case 1: case 2: case 3:
-				message = "";
-				btb = false;
-				break;
-			case 4:
-				message = "4-LINES";
-				if (btb) {
-					message = "BACK TO BACK " +  message;
-				}
-				btb = true;
-				break;
-			}
-		}
-			
-//		System.out.println(tspin + " " + line);
-			
-	}
+//	public void lineCheck() {
+//		boolean tspin = false;
+//		int line = 0;
+//		int rize = 0;
+////		message = "";
+//		
+//		if (now_mino instanceof MinoT && not_move) {
+//			int count = 0;
+//			Point[] kado = {new Point(0, 1), new Point(0, 3), new Point(2, 1), new Point(2, 3)};
+//			for (Point i : kado) {
+//				if (now_mino.getPosition().x + i.x < 0 || now_mino.getPosition().x + i.x >= ban.length || now_mino.getPosition().y + i.y < 0 || ban[now_mino.getPosition().x + i.x][now_mino.getPosition().y + i.y].isBlock()) {
+//					count++;
+//				}
+//			}
+//			if (count >= 3) {
+//				tspin = true;
+//			}
+//		}
+//		
+//		for (int i = 0; i < ban[0].length; i++) {
+//			boolean line_clear_flag = true;
+//			
+//			for (int k = 0; k < ban.length; k++) {
+//				if (!ban[k][i].isBlock()) {
+//					line_clear_flag = false;
+//				}
+//			}
+//			
+//			
+//			if (line_clear_flag) {
+//				line++;
+//			}
+//			else if (line >= 1) {
+//				for (int j = 0; j < ban.length; j++) {
+//					try {
+//						ban[j][i - line] = (Block) ban[j][i].clone();
+//					} catch (CloneNotSupportedException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//			
+//		}
+//		if (line >= 1) {
+//			for (int i = ban[0].length; i >= ban[0].length - line - 1; i--) {
+//				for (int j = 0; j < ban.length; j++) {
+//					ban[j][ban[0].length - 1] = new Block();
+//				}
+//			}
+//		}
+//		
+//		// 相手に送るライン数
+//		if (tspin) {
+//			switch (line) {
+//			case 1:
+//				rize = 2;
+//				break;
+//			case 2:
+//				rize = 4;
+//				break;
+//			case 3:
+//				rize = 6;
+//				break;
+//			}
+//			if (btb) {
+//				rize += 1;
+//			}
+//		}
+//		else {
+//			switch (line) {
+//			case 2:
+//				rize = 1;
+//				break;
+//			case 3:
+//				rize = 2;
+//				break;
+//			case 4:
+//				rize = 4;
+//				if (btb) {
+//					rize += 1;
+//				}
+//				break;
+//			}
+//		}
+//
+//		if (next_rize > 0) {
+//				
+//			// 相殺しきれてない
+//			if (next_rize >= rize) {
+//				next_rize -= rize;
+//				rize = 0;
+//			}
+//			// 相殺できてさらに送れる
+//			else {
+//				rize -= next_rize;
+//				next_rize = 0;
+//			}
+//		}
+//		
+//		total_line += line;
+//		total_attack += rize;
+//			
+//		if (your_field != null) {
+//			your_field.setNextRize(your_field.getNextRize() + rize);
+//		}
+//		
+//		// BTB, メッセージ
+//		if (tspin) {
+//			switch (line) {
+//			case 0:
+//				message = "T-SPIN";
+//				break;
+//			case 1:
+//				message = "T-SPIN SINGLE";
+//				break;
+//			case 2:
+//				message = "T-SPIN DOUBLE";
+//				break;
+//			case 3:
+//				message = "T-SPIN TRIPLE";
+//				break;
+//			}
+//			if (line >= 1) {
+//				if (btb) {
+//					message = "BACK TO BACK " +  message;
+//				}
+//				btb = true;
+//			}
+//		}
+//		else {
+//			switch (line) {
+//			case 1: case 2: case 3:
+//				message = "";
+//				btb = false;
+//				break;
+//			case 4:
+//				message = "4-LINES";
+//				if (btb) {
+//					message = "BACK TO BACK " +  message;
+//				}
+//				btb = true;
+//				break;
+//			}
+//		}
+//			
+////		System.out.println(tspin + " " + line);
+//			
+//	}
+//	
+//	
+//	public void setti() {
+//		
+//		for (int x = 0; x < now_mino.getMinoSize(); x++) {
+//			for (int y = 0; y < now_mino.getMinoSize(); y++) {
+//				if (now_mino.getPiece()[x][y].isBlock()) {
+//					try {
+//						ban[now_mino.getPosition().x + x][now_mino.getPosition().y + y] = (Block) now_mino.getPiece()[x][y].clone();
+//					} catch (CloneNotSupportedException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		}
+//		
+//		lineCheck();
+//		rize();
+//		
+//		// 新しいミノ出現
+//		now_mino = next_minos.get(0);
+//		next_minos.remove(0);
+//		next_minos.add(getMino());
+//		if(!now_mino.check(now_mino.getPosition(), ban)) {
+//			message = "GAME OVER";
+//			gameOver();
+//		}
+//		else {
+//			can_hold = true;
+//			if (!clone) {
+//				timer.init();
+//			}
+//			ochihajime = true;
+//		}
+//	}
 	
-	
-	public void setti() {
-		
-		for (int x = 0; x < now_mino.getMinoSize(); x++) {
-			for (int y = 0; y < now_mino.getMinoSize(); y++) {
-				if (now_mino.getPiece()[x][y].isBlock()) {
-					try {
-						ban[now_mino.getPosition().x + x][now_mino.getPosition().y + y] = (Block) now_mino.getPiece()[x][y].clone();
-					} catch (CloneNotSupportedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		
-		lineCheck();
-		rize();
-		
-		// 新しいミノ出現
-		now_mino = next_minos.get(0);
-		next_minos.remove(0);
-		next_minos.add(getMino());
-		if(!now_mino.check(now_mino.getPosition(), ban)) {
-			message = "GAME OVER";
-			gameOver();
-		}
-		else {
-			can_hold = true;
-			if (!clone) {
-				timer.init();
-			}
-			ochihajime = true;
-		}
+	public void setAke(int ake) {
+		this.ake = ake;
 	}
 	
 	public void setBan(Block[][] blocks) {
 		this.ban = blocks;
+	}
+	
+	public void setBTB(boolean btb) {
+		this.btb = btb;
 	}
 	
 	public void setCanHold(boolean can_hold) {
@@ -459,6 +487,10 @@ public class Field implements Cloneable {
 	public void setHoldMino(Mino hold_mino) {
 		this.hold_mino = hold_mino;
 	}
+
+	public void setKakuritsu(int kakuritsu) {
+		this.kakuritsu = kakuritsu;
+	}
 	
 	public void setMessage(String message) {
 		this.message = message;
@@ -466,6 +498,10 @@ public class Field implements Cloneable {
 	
 	public void setNextMinoVolume(int next_mino_volume) {
 		this.next_mino_volume = next_mino_volume;
+	}
+
+	public void setNextRize(int next_rize) {
+		this.next_rize = next_rize;
 	}
 	
 	public void setNotMove(boolean not_move) {
@@ -479,10 +515,6 @@ public class Field implements Cloneable {
 	public void setOchihajime(boolean ochihajime) {
 		this.ochihajime = ochihajime;
 	}
-
-	public void setKakuritsu(int kakuritsu) {
-		this.kakuritsu = kakuritsu;
-	}	
 	
 	public void setYourField(Field field) {
 		this.your_field = field;

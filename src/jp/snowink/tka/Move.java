@@ -17,6 +17,14 @@ public class Move {
 		this.hold = hold;
 	}
 	
+	public Move(Controller c, Mino mino, Point point, int rotate) {
+		this.c = c;
+		this.mino = mino;
+		this.point = point;
+		this.rotate = rotate;
+		this.hold = false;
+	}
+	
 	public Move(Field field, Mino mino, Point point, int rotate) {
 		this.c = new Controller(field);
 		this.mino = mino;

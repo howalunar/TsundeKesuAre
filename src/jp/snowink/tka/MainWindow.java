@@ -65,9 +65,10 @@ public class MainWindow extends JFrame implements KeyListener {
 					this.getContentPane().remove(menu_panel);
 					this.getContentPane().add(endless_panel, BorderLayout.CENTER);
 					this.getContentPane().validate();
-					active_field = DataPool.endless_field;
 					active_timer = DataPool.endless_timer;
+					active_field = DataPool.endless_field;
 					active_panel = endless_panel;
+					active_timer.gameStart();
 					active_timer.start();
 					DataPool.joutai = 1;
 					break;
@@ -77,10 +78,12 @@ public class MainWindow extends JFrame implements KeyListener {
 					this.getContentPane().remove(menu_panel);
 					this.getContentPane().add(endless_panel, BorderLayout.CENTER);
 					this.getContentPane().validate();
+					active_timer = DataPool.endless_timer;
 					active_field = DataPool.endless_field;
 					active_panel = endless_panel;
+					active_timer.gameStart();
 					active_timer.start();
-					new AI(DataPool.endless_timer, endless_panel).start();
+					new AI(DataPool.endless_timer).start();
 					break;
 				case 2:
 					DataPool.load();
@@ -88,15 +91,16 @@ public class MainWindow extends JFrame implements KeyListener {
 					this.getContentPane().remove(menu_panel);
 					this.getContentPane().add(vs_panel, BorderLayout.CENTER);
 					this.getContentPane().validate();
-					active_field = DataPool.vs_field_1;
 					active_timer = DataPool.vs_ftimer_1;
+					active_field = DataPool.vs_field_1;
 					active_panel = vs_panel;
 					active_timer.start();
 					DataPool.joutai = 1;
-//					DataPool.vs_field_2.getTimer().start();
+					DataPool.vs_ftimer_2.gameStart();
+					DataPool.vs_ftimer_2.start();
 					DataPool.vs_field_1.setYourField(DataPool.vs_field_2);
 					DataPool.vs_field_2.setYourField(DataPool.vs_field_1);
-					new AI(DataPool.vs_ftimer_2, vs_panel).start();
+					new AI(DataPool.vs_ftimer_2).start();
 					break;
 				case 3:
 					break;

@@ -14,24 +14,22 @@ import jp.snowink.tka.mino.MinoI;
 
 public class AI extends Thread {
 	
-	private Controller field;
-	private JPanel panel;
+	private Controller c;
 	
-	public AI(Controller field, JPanel panel) {
-		this.field = field;
-		this.panel = panel;
+	public AI(Controller field) {
+		this.c = field;
 	}
 	
 	public void run() {
 		
-		while (!field.getField().isGameOver()) {
-			if (field.getField().ochihajime) {
-				field.getField().ochihajime = false;
-				execute(field, panel);
+		while (!c.isGameOver()) {
+			if (c.getField().ochihajime) {
+				c.getField().ochihajime = false;
+				execute(c);
 			}
 			
 			try {
-				this.sleep(1000);
+				this.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -42,19 +40,19 @@ public class AI extends Thread {
 	
 	
 	
-	public void execute(Controller field, JPanel panel) {
-		Move szs;
+	public void execute(Controller c) {
+		Move szs = null;
 
 		try {
 			
-			if (field.getField().getNowMino() instanceof MinoI && AITools.minHeight(field.getField().getBan(), AITools.getAna()) >= 4) {
-				szs = new Move(field.getField(), field.getField().getNowMino(), new Point(7, 17), 1);
+			if (c.getField().getNowMino() instanceof MinoI && AITools.minHeight(c.getField().getBan(), AITools.getAna()) >= 4) {
+				szs = new Move(c.getField(), c.getField().getNowMino(), new Point(7, 17), 1);
 			}
 			
 			else {
 
 			// 手の検索
-			ArrayList<Move> moves = AITools.getAllMove(field);
+			ArrayList<Move> moves = AITools.getAllMove(c);
 			
 			// 最善手の選択
 //			AITools.removeAnaMove(moves, AITools.getAna());
@@ -92,7 +90,7 @@ public class AI extends Thread {
 			System.out.println(szs);
 			
 			// 最善手の実行
-			AITools.drop(field, szs.getPoint(), szs.getRotate(), 50);
+			AITools.drop(c, szs.getPoint(), szs.getRotate(), 50);
 			
 
 			

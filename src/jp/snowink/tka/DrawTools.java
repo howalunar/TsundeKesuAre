@@ -131,8 +131,8 @@ public class DrawTools {
 		}
 	}
 	
-	public static void drawTime(Graphics g, Field field, int size, Point point) {
-		long time = Calendar.getInstance().getTimeInMillis() - field.timer.getStartTime();
+	public static void drawTime(Graphics g, Field field, int size, Point point, long start_time) {
+		long time = Calendar.getInstance().getTimeInMillis() - start_time;
 		double min = time / (double) 60000;
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("MS UI Gothic", Font.PLAIN, size));
